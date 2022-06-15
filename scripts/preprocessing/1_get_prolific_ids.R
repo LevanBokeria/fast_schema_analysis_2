@@ -28,8 +28,8 @@ for (iFile in incoming_files){
         my_data <- read_file(paste0('./data/jatos_gui_downloads/incoming_data/',iFile))
         
         # Find the data submission module
-        start_loc <- str_locate(my_data, 'data_submission_start---')[2]
-        end_loc   <- str_locate(my_data, '---data_submission_end]')[1]
+        start_loc <- str_locate_all(my_data, 'data_submission_start---')[[1]]
+        end_loc   <- str_locate_all(my_data, '---data_submission_end]')[[1]]
         
         # If no data submission module, skip
         if (is.na(start_loc)){
@@ -40,14 +40,23 @@ for (iFile in incoming_files){
                 
         } else {
                 
-                json_content <- substr(my_data,start_loc+1,end_loc-1)
                 
-                json_decoded <- fromJSON(json_content)
-                
-                print(json_decoded$prolific_ID)  
-                
-                prol_ids <- append(prol_ids,json_decoded$prolific_ID)
+                for (iPtp in seq(nrow(start_loc))){
+                        
+                        json_content <- substr(my_data,start_loc[iPtp,2]+1,end_loc[iPtp,1]-1)
+                        
+                        json_decoded <- fromJSON(json_content)
+                        
+                        print(json_decoded$prolific_ID)  
+                        
+                        prol_ids <- append(prol_ids,json_decoded$prolific_ID)      
+                        
+                        
+                }
+          
                 
         }
 
 }
+
+# Now here, save these as CSV

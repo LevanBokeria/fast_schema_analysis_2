@@ -50,8 +50,11 @@ for (iFile in incoming_files){
                 # Substitute that ID in the json_content
                 json_content <- str_replace_all(json_content,json_decoded$prolific_ID,iRand_id)
                 
+                # Re-decode the content
+                json_decoded <- fromJSON(json_content)
+                
                 # Save the data submission module output
-                export(json_content,paste0('./data/',iRand_id,'.RDS'))
+                export(json_decoded,paste0('./data/',iRand_id,'.RDS'))
                 
                 print(paste0('Saved ', json_decoded$prolific_ID))
                 

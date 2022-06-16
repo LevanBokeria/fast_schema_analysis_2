@@ -8,14 +8,22 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 
+saveDataCSV <- T
 
-block_results_all_ptp <- NULL
-listings_all_ptp      <- NULL
-break_rt_all_ptp      <- NULL
+
+
 # Start reading the files ##################
 
 # Get a list of all files in the folder
-incoming_files <- list.files('./data/',pattern = '*.txt')
+incoming_files <- list.files('./data/',pattern = '*.RDS')
+
+# Pre-assign variables
+block_results_all_ptp <- NULL
+listings_all_ptp      <- NULL
+feedback_all_ptp      <- NULL
+
+break_rt_all_ptp      <- NULL
+
 
 for (iFile in incoming_files){
         
@@ -23,10 +31,7 @@ for (iFile in incoming_files){
         print(iFile)
         
         # Parse it
-        my_data <- read_file(paste0('./data/',iFile))
-        
-        # Decode that string
-        json_decoded <- fromJSON(my_data)
+        json_decoded <- import(paste0('./data/',iFile))
         
         print(json_decoded$prolific_ID)  
         
@@ -100,7 +105,8 @@ for (iFile in incoming_files){
                                                  dist_border_t,
                                                  dist_border_b),
                        border_dist_summed = min(dist_border_l,dist_border_r) + 
-                                            min(dist_border_t,dist_border_b))
+                                            min(dist_border_t,dist_border_b)) %>%
+                ungroup()
         
         # Combine the data across participants
         block_results_all_ptp <- bind_rows(block_results_all_ptp,block_results)
@@ -138,20 +144,31 @@ for (iFile in incoming_files){
         )
         curr_ptp_listings <- curr_ptp_listings %>%
                 select(rt,response) %>%
-                mutate(ptp = json_decoded$prolific_ID)
-        curr_ptp_listings$boards <- unique(block_results$condition)[3:7]
-        
+                mutate(response.Q0 = response$Q0,
+                       response.Q1 = response$Q1) %>% 
+                select(-response) %>% 
+                mutate(ptp = json_decoded$prolific_ID, .before = rt) %>% 
+                mutate(boards = unique(block_results$condition)[3:7], .before = rt)
+
         listings_all_ptp <- bind_rows(listings_all_ptp,curr_ptp_listings)
         
         
         ## Times spent at each break --------------------
         curr_ptp_break_rt <- NULL
-        curr_ptp_break_rt[1] <- json_decoded$prolific_ID
+        # curr_ptp_break_rt[1] <- json_decoded$prolific_ID
         for (iBreak in seq(1,11)){
-                curr_ptp_break_rt[iBreak+1] <- sum(json_decoded$outputData$break_results[[iBreak]]$rt,na.rm=T)
+                curr_ptp_break_rt[iBreak] <- sum(json_decoded$outputData$break_results[[iBreak]]$rt,na.rm=T)
         }
         
-        break_rt_all_ptp[iPtp,] <- curr_ptp_break_rt
+        curr_ptp_break_rt <- curr_ptp_break_rt %>%
+                as_tibble() %>% 
+                rename(time_spent_msec = value) %>%
+                mutate(break_idx = 1:nrow(.), .before = time_spent_msec) %>%
+                mutate(ptp = json_decoded$prolific_ID, .before = break_idx)
+                
+        
+        
+        break_rt_all_ptp <- bind_rows(break_rt_all_ptp,curr_ptp_break_rt)
 }
 
 block_results_all_ptp <- block_results_all_ptp %>%
@@ -159,8 +176,8 @@ block_results_all_ptp <- block_results_all_ptp %>%
                                             'practice2',
                                             'schema_c',
                                             'schema_ic',
-                                            'landmark_schema',
-                                            'random_locations',
+                                            'schema_l',
+                                            'random_loc',
                                             'no_schema'))
 
 names(feedback_all_ptp) <- c('ptp',
@@ -189,9 +206,13 @@ for (iPtp in as.vector(all_ptp)){
 
 # Save everything #######################
 if (saveDataCSV){
-        write_csv(block_results_all_ptp,'./results/pilots/preprocessed_data/block_results_long_form.csv')
-        write_csv(feedback_all_ptp,'./results/pilots/preprocessed_data/feedback_all_ptp.csv')
-        write_csv(listings_all_ptp,'./results/pilots/preprocessed_data/listings_all_ptp.csv')
-        write.csv(break_rt_all_ptp,'./results/pilots/preprocessed_data/break_rt_all_ptp.csv',
-                  row.names = FALSE)
+        
+        print('Overwriting data...')
+        
+        write_csv(block_results_all_ptp,'./results/preprocessed_data/block_results_long_form.csv')
+        write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
+        write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
+        write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv')
+        
+        print('Data overwritten.')
 }

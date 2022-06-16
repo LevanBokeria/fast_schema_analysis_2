@@ -16,7 +16,9 @@ file_location <- 'jatos_gui_downloads'
 # Start reading the files ##################
 
 # Get the file mapping prolific IDs with randID
-prol_to_rand <- read_csv('../../../levan/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv')
+prol_to_rand <- read_csv(paste0('../../../',
+                                Sys.getenv("USERNAME"),
+                                '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv'))
 
 # Get a list of all files in the folder
 incoming_files <- list.files(paste0('./data/',file_location,'/incoming_data/'))
@@ -31,27 +33,29 @@ for (iFile in incoming_files){
         my_data <- read_file(paste0('./data/',file_location,'/incoming_data/',iFile))
         
         # Find the data submission module
-        start_loc <- str_locate(my_data, 'data_submission_start---')[2]
-        end_loc   <- str_locate(my_data, '---data_submission_end]')[1]
+        start_loc <- str_locate_all(my_data, 'data_submission_start---')[[1]]
+        end_loc   <- str_locate_all(my_data, '---data_submission_end]')[[1]]
         
-        # Get that string
-        json_content <- substr(my_data,start_loc+1,end_loc-1)
+        for (iPtp in seq(nrow(start_loc))){
+                
+                json_content <- substr(my_data,start_loc[iPtp,2]+1,end_loc[iPtp,1]-1)
+                
+                json_decoded <- fromJSON(json_content)
+                
+                print(json_decoded$prolific_ID)  
+                
+                # Find the rand_id of this person
+                iRand_id <- prol_to_rand$rand_id[prol_to_rand$prol_id == json_decoded$prolific_ID]
+                
+                # Substitute that ID in the json_content
+                json_content <- str_replace_all(json_content,json_decoded$prolific_ID,iRand_id)
+                
+                # Save the data submission module output
+                export(json_content,paste0('./data/',iRand_id,'.RDS'))
+                
+                print(paste0('Saved ', json_decoded$prolific_ID))
+                
+        }        
         
-        # Decode that string
-        json_decoded <- fromJSON(json_content)
-        
-        print(json_decoded$prolific_ID)  
-        
-        # Find the rand_id of this person
-        iRand_id <- prol_to_rand$rand_id[prol_to_rand$prol_id == json_decoded$prolific_ID]
-        
-        # Substitute that ID in the json_content
-        json_content <- str_replace_all(json_content,json_decoded$prolific_ID,iRand_id)
-        
-        # Save the data submission module output
-        fileConn <- file(paste0('./data/',iRand_id,'.txt'))
-        writeLines(json_content,fileConn)
-        close(fileConn)
-
         
 }

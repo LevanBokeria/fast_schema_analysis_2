@@ -13,7 +13,9 @@ source('./scripts/utils/load_all_libraries.R')
 # Start reading the files ##################
 
 # Get the file mapping prolific IDs with randID
-prol_to_rand <- read_csv('../../../levan/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv')
+prol_to_rand <- read_csv(paste0('../../../',
+                                Sys.getenv("USERNAME"),
+                                '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv'))
 
 # Get a list of all files in the folder
 incoming_files <- list.files('./data/jatos_gui_downloads/incoming_data/')
@@ -60,3 +62,7 @@ for (iFile in incoming_files){
 }
 
 # Now here, save these as CSV
+write_csv(as.data.frame(prol_ids),
+          paste0('../../../',
+                 Sys.getenv("USERNAME"),
+                 '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/incoming_prol_ids.csv'))

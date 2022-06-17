@@ -23,6 +23,7 @@ listings_all_ptp      <- NULL
 feedback_all_ptp      <- NULL
 
 break_rt_all_ptp      <- NULL
+instructions_rt_all_ptp <- NULL
 
 
 for (iFile in incoming_files){
@@ -169,6 +170,20 @@ for (iFile in incoming_files){
         
         
         break_rt_all_ptp <- bind_rows(break_rt_all_ptp,curr_ptp_break_rt)
+        
+        ## Times spent at instructions ---------------------------
+        
+        # For the first instructions
+        inst_1 <- do.call(rbind, 
+                          json_decoded$outputData$instructions_results$instructions_1)
+        inst_2 <- do.call(rbind, 
+                          json_decoded$outputData$instructions_results$instructions_2)
+        
+        # Combine these
+        curr_ptp_instructions_rt <- rbind(inst_1,inst_2)
+        
+        instructions_rt_all_ptp <- bind_rows(instructions_rt_all_ptp, curr_ptp_instructions_rt)
+        
 }
 
 block_results_all_ptp <- block_results_all_ptp %>%
@@ -213,6 +228,7 @@ if (saveDataCSV){
         write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
         write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
         write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv')
+        write.csv(instructions_rt_all_ptp,'./results/preprocessed_data/instructions_rt_all_ptp.csv')        
         
         print('Data overwritten.')
 }

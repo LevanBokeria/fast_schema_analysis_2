@@ -1,11 +1,6 @@
 ptp,boards,rt,response.Q0,response.Q1
-sub_001,schema_l,40204.799999952316,"cupcake, escalator, waterfountain, bed, basketball, power socket","maccaroni, shower head, table, onion, wheel, shelves"
-sub_001,random_loc,59064.200000047684,"bath, flipflop, doorhandle, ace of diamonds, a car side mirror, a curtain","a chair, salt, school bus, a map, a tv, a doughnut"
-sub_001,no_schema,31254.5,"cash machine, christmas tree, a cow, drum set, a lightbulb, an armchair",NA
-sub_001,schema_c,38265.59999990463,"a gift, a pumpkin, kiwi, phone, rose, shovel","chrisp, thermos, squirrel, a bike wheel, a beer, a bee"
-sub_001,schema_ic,36889.09999990463,"trolley, tree, foosball, bus, ice cube, lady bug","microwave, rubbicks cube, treadmill, pool table, beer bottle, hoze"
-sub_002,no_schema,5058.299999952316,rr34r3,NA
-sub_002,schema_c,2884,nghntn,nhfnfyh
-sub_002,schema_ic,14316,esv,res
-sub_002,schema_l,4845.599999904633,tfgf,ff
-sub_002,random_loc,6064.799999952316,dfghd,hgd
+sub_001,no_schema,1405.6999999997206,non,NA
+sub_001,schema_c,2284.5,nono,non
+sub_001,schema_ic,1734.6000000000931,lkj,lkj
+sub_001,schema_l,2287.5,lkj,lkj
+sub_001,random_loc,2134.1999999997206,lkj,lkj

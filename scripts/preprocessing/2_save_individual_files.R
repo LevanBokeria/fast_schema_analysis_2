@@ -46,12 +46,10 @@ for (iFile in incoming_files){
                 
                 # Find the rand_id of this person
                 iRand_id <- prol_to_rand$rand_id[prol_to_rand$prol_id == json_decoded$prolific_ID]
-                
-                # Substitute that ID in the json_content
-                json_content <- str_replace_all(json_content,json_decoded$prolific_ID,iRand_id)
+        
                 
                 # Re-decode the content
-                json_decoded <- fromJSON(json_content)
+                json_decoded$prolific_ID <- iRand_id
                 
                 # Save the data submission module output
                 export(json_decoded,paste0('./data/',iRand_id,'.RDS'))

@@ -48,7 +48,7 @@ data_summary_near_far_pas <- long_data %>%
         rename(type = hidden_pa_img_type)
 
 ### Combine =============================
-
+data_summary <- NULL
 data_summary <- bind_rows(data_summary_all_pas,
                           data_summary_near_far_pas)
 

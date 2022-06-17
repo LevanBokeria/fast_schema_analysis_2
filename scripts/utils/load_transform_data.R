@@ -32,7 +32,7 @@ if (file.exists('./results/data_summary.csv')){
         data_summary <- import('./results/data_summary.csv')
         
         data_summary <- data_summary %>%
-                muatete(across(c(ptp,
+                mutate(across(c(ptp,
                                  condition,
                                  type),as.factor))
         

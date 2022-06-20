@@ -43,9 +43,8 @@ for (iFile in incoming_files){
         )
 
         block_results <- block_results %>%
-                select(!c('internal_node_id','trial_index','trial_type',
-                          starts_with('display_information')))
-
+                select(!c('internal_node_id','trial_index','trial_type','trial_stage'))
+        
         # Sanity check
         n_trials_per_block <- block_results %>%
                 filter(!condition %in% c('practice','practice2')) %>% 
@@ -115,6 +114,15 @@ for (iFile in incoming_files){
                        border_dist_summed = min(dist_border_l,dist_border_r) + 
                                             min(dist_border_t,dist_border_b)) %>%
                 ungroup()
+        
+        block_results <- block_results %>%
+                relocate(starts_with('display_information'), 
+                         .after = 'border_dist_summed')
+        
+        # We have several nested dataframes within the display_information column
+        # so we must flatten the whole thing. 2 levels of hierarchy, so call this twice:
+        block_results <- do.call(data.frame,block_results)
+        block_results <- do.call(data.frame,block_results)
         
         # Combine the data across participants
         block_results_all_ptp <- bind_rows(block_results_all_ptp,block_results)
@@ -251,14 +259,14 @@ if (saveDataCSV){
         print('Overwriting data...')
         
         write_csv(block_results_all_ptp,'./results/preprocessed_data/block_results_long_form.csv')
-        write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
-        write_csv(int_fb_all_ptp,'./results/preprocessed_data/intermediate_feedback_all_ptp.csv')
-        write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
-        write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv',
-                  row.names = F)
-        write.csv(instructions_rt_all_ptp,
-                  './results/preprocessed_data/instructions_rt_all_ptp.csv',
-                  row.names = FALSE)
+        # write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
+        # write_csv(int_fb_all_ptp,'./results/preprocessed_data/intermediate_feedback_all_ptp.csv')
+        # write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
+        # write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv',
+        #           row.names = F)
+        # write.csv(instructions_rt_all_ptp,
+        #           './results/preprocessed_data/instructions_rt_all_ptp.csv',
+        #           row.names = FALSE)
         
         print('Data overwritten.')
 }

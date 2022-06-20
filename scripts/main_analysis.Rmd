@@ -43,7 +43,7 @@ if (qc_filter){
 
 ## Plot mouse click heatplots for each participant, each block
 
-```{r mouse-heat-plots, fig.width=15, fig.height=6}
+```{r mouse-heat-plots, fig.width=15, fig.height=8}
 
 long_data %>%
         filter(block == 2) %>%
@@ -61,7 +61,7 @@ long_data %>%
 
 ## Raw learning curves
 
-```{r raw-learning-curves-and-fits, fig.width=13, fig.height=5}
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=7}
 
 
 # Plot the fits
@@ -121,37 +121,6 @@ print(fig_each_ptp)
 
 ```
 
-```{r learning-curves-across-part-overlaid, fig.width=6, fig.height=4}
-
-# Plot the fits
-fig_each_ptp <- mean_by_rep_all_types_long %>%
-        filter(accuracy_type %in% c('mouse_error'),
-               new_pa_status == 'both',
-               border_dist == 'all') %>%
-        droplevels() %>%                
-        group_by(condition,
-                 new_pa_img_row_number_across_blocks) %>%
-        summarise(n = n(),
-                  correct_mean_across_ptp = mean(correct_mean,na.rm = T)) %>% 
-        ungroup() %>%
-        ggplot(aes(x=new_pa_img_row_number_across_blocks,
-                   y=correct_mean_across_ptp,
-                   color=condition)) +
-        geom_point() +
-        geom_line() +
-
-        ggtitle(paste('Mouse euclidean distance; Across participants',sep='')) +
-        xlab('Image repetition') +
-        ylab('Mouse euclidean distance ') +
-        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
-        # theme(legend.position = 'top') +
-        geom_vline(xintercept = 4.5, linetype = 'dashed') 
-
-
-print(fig_each_ptp)
-
-
-```
 
 ```{r learning-curves-across-part-ech-border-dist, fig.width=13, fig.height=4}
 

@@ -22,6 +22,9 @@ source('./scripts/utils/qc_checks_permutations.R')
 
 saveDataCSV <- T
 
+load_qc_perm_data <- T
+save_qc_perm_data <- T
+
 # Start the QC analysis ##################
 
 ## 1. Manual QC failures ------------------------------
@@ -91,8 +94,8 @@ qc_fail_missing_or_fast <- missing_data_summary %>%
 ## 5. Check against permuted null distributions -------------------------
 
 qc_check_permutation <- permute_mouse_error(long_data,
-                                        load_existing_data = T,
-                                        saveData = F)
+                                        load_existing_data = load_qc_perm_data,
+                                        saveData = save_qc_perm_data)
 
 qc_check_permutation <- qc_check_permutation %>%
         select(-c(n_perm,
@@ -183,6 +186,14 @@ qc_table <- qc_table %>%
 qc_table <- qc_table %>%
         relocate(batch_id, .after = counterbalancing)
 
+
+# Tell me how many I still need #######################
+
+print('We have this many QC pass people:')
+qc_table %>%
+        filter(!qc_fail_overall) %>%
+        droplevels() %>%
+        count(counterbalancing) %>% print()
 
 # Save the qc table ############################
 

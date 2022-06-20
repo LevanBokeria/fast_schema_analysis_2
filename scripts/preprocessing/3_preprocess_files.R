@@ -24,7 +24,7 @@ feedback_all_ptp      <- NULL
 
 break_rt_all_ptp      <- NULL
 instructions_rt_all_ptp <- NULL
-
+int_fb_all_ptp          <- NULL
 
 for (iFile in incoming_files){
         
@@ -119,6 +119,21 @@ for (iFile in incoming_files){
         # Combine the data across participants
         block_results_all_ptp <- bind_rows(block_results_all_ptp,block_results)
         
+        
+        ## Intermediate feedback ----------------------------------------
+        
+        curr_ptp_int_fb <- json_decoded$outputData$break_results[[1]][1,]
+        
+        for (iBreak in seq(2,11)){
+                curr_ptp_int_fb <- bind_rows(curr_ptp_int_fb,json_decoded$outputData$break_results[[iBreak]][1,])
+        }
+        
+        curr_ptp_int_fb <- curr_ptp_int_fb %>%
+                mutate(response = response$Q0) %>%
+                mutate(ptp = json_decoded$prolific_ID, .before = rt) %>%
+                select(c(ptp,rt,response,time_elapsed))
+        
+        int_fb_all_ptp <- bind_rows(int_fb_all_ptp,curr_ptp_int_fb)
         
         ## Final Feedback -----------------------
         
@@ -237,12 +252,13 @@ if (saveDataCSV){
         
         write_csv(block_results_all_ptp,'./results/preprocessed_data/block_results_long_form.csv')
         write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
+        write_csv(int_fb_all_ptp,'./results/preprocessed_data/intermediate_feedback_all_ptp.csv')
         write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
         write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv',
                   row.names = F)
         write.csv(instructions_rt_all_ptp,
                   './results/preprocessed_data/instructions_rt_all_ptp.csv',
-                  row.names = FALSE)        
+                  row.names = FALSE)
         
         print('Data overwritten.')
 }

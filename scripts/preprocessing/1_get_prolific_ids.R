@@ -12,11 +12,6 @@ source('./scripts/utils/load_all_libraries.R')
 
 # Start reading the files ##################
 
-# Get the file mapping prolific IDs with randID
-prol_to_rand <- read_csv(paste0('../../../',
-                                Sys.getenv("USERNAME"),
-                                '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv'))
-
 # Get a list of all files in the folder
 incoming_files <- list.files('./data/incoming_data/jatos_gui_downloads/')
 

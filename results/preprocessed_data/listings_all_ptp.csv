@@ -1,11 +1,16 @@
 ptp,boards,rt,response.Q0,response.Q1
-sub_001,random_loc,1995.2999999998137,lj,lkj
-sub_001,no_schema,2341.7999999998137,;lk,NA
-sub_001,schema_c,3319.100000000093,nonjln lkn lkn ,lkjl kj
-sub_001,schema_ic,2157.7999999998137,Lkn,lkn
-sub_001,schema_l,1853.8000000002794,"jkn,m",lkm
-sub_002,no_schema,1405.6999999997206,non,NA
-sub_002,schema_c,2284.5,nono,non
-sub_002,schema_ic,1734.6000000000931,lkj,lkj
-sub_002,schema_l,2287.5,lkj,lkj
-sub_002,random_loc,2134.1999999997206,lkj,lkj
+sub_001,schema_l,1667.7000000476837,wer,wre
+sub_001,random_loc,1348.9000000953674,wer,wer
+sub_001,no_schema,1943.7999999523163,wer,NA
+sub_001,schema_c,1845.5,ewt,ter
+sub_001,schema_ic,1779,trw,ewt
+sub_002,schema_ic,1966.2000000476837,fwe,l;
+sub_002,schema_l,4344.799999952316,kli,klj
+sub_002,random_loc,2018.5,wer,wer
+sub_002,no_schema,2215.399999856949,saf,NA
+sub_002,schema_c,2103.5,asf,asf
+sub_003,schema_c,3177.5,s\asad,asfdasda
+sub_003,schema_ic,1656.5999999046326,asdf,asf
+sub_003,schema_l,1690.2999999523163,asdf,asdf
+sub_003,random_loc,2323.2000000476837,asdffsd,fsda
+sub_003,no_schema,1819.6000001430511,fdsa,NA

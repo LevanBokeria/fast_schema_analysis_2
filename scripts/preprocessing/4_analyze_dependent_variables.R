@@ -26,6 +26,7 @@ saveData <- T
 data_summary_all_pas <- long_data %>%
         filter(block == 2) %>%
         group_by(ptp,
+                 counterbalancing,
                  condition) %>%
         summarise(n_trials = n(),
                   block_2_mouse_error_mean = mean(mouse_error, na.rm = T),
@@ -39,6 +40,7 @@ data_summary_near_far_pas <- long_data %>%
         filter(block == 2,
                hidden_pa_img_type %in% c('near','far')) %>% 
         group_by(ptp,
+                 counterbalancing,
                  condition,
                  hidden_pa_img_type) %>%
         summarise(n_trials = n(),

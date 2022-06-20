@@ -71,6 +71,13 @@ for (iFile in incoming_files){
                 mutate(ptp = json_decoded$prolific_ID, .before = rt,
                        ptp = as.factor(ptp))
         
+        block_results <- block_results %>%
+                mutate(counterbalancing = json_decoded$inputData$counterbalancing,
+                       .before = rt,
+                       counterbalancing = as.factor(counterbalancing))        
+        
+        
+        
         # Add a row counter for each occurrence of a hidden_pa_img, 
         # within that condition and within that block
         block_results <- block_results %>%

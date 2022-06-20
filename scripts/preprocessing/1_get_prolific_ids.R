@@ -18,7 +18,7 @@ prol_to_rand <- read_csv(paste0('../../../',
                                 '/ownCloud/Cambridge/PhD/projects/fast_schema_mapping/prolific_metadata/prol_id_to_rand_id.csv'))
 
 # Get a list of all files in the folder
-incoming_files <- list.files('./data/jatos_gui_downloads/incoming_data/')
+incoming_files <- list.files('./data/incoming_data/jatos_gui_downloads/')
 
 prol_ids <- c()
 
@@ -27,7 +27,7 @@ for (iFile in incoming_files){
         print(iFile)
         
         # Parse it
-        my_data <- read_file(paste0('./data/jatos_gui_downloads/incoming_data/',iFile))
+        my_data <- read_file(paste0('./data/incoming_data/jatos_gui_downloads/',iFile))
         
         # Find the data submission module
         start_loc <- str_locate_all(my_data, 'data_submission_start---')[[1]]

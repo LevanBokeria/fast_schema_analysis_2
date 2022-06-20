@@ -76,6 +76,7 @@ long_data <- long_data %>%
 
 missing_data_summary <- long_data %>%
         group_by(ptp,
+                 counterbalancing,
                  condition) %>%
         summarise(n_trials = n(),
                   n_missed_or_fast = sum(missed_or_too_fast),
@@ -83,14 +84,15 @@ missing_data_summary <- long_data %>%
         ungroup()
 
 qc_fail_missing_or_fast <- missing_data_summary %>%
-        group_by(ptp) %>%
+        group_by(ptp,
+                 counterbalancing) %>%
         summarise(qc_fail_missing_or_fast = any(perc_missed_or_fast > missed_perc_threshold))
 
 ## 5. Check against permuted null distributions -------------------------
 
 qc_check_permutation <- permute_mouse_error(long_data,
-                                        load_existing_data = T,
-                                        saveData = F)
+                                        load_existing_data = F,
+                                        saveData = T)
 
 qc_check_permutation <- qc_check_permutation %>%
         select(-c(n_perm,
@@ -148,14 +150,21 @@ qc_table <- qc_table %>%
         mutate(qc_fail_overall = sum(qc_fail_manual,
                                      qc_fail_instructions_rt,
                                      qc_fail_break_rt,
-                                     qc_fail_missing_or_fast)) %>%
+                                     qc_fail_missing_or_fast) > 0,
+               .before = qc_fail_manual) %>%
         ungroup()
 
+qc_table <- qc_table %>%
+        relocate(counterbalancing, .after = ptp)
+
+# Save the qc table ############################
 
 
-
-
-
+if (saveDataCSV){
+        
+        export(qc_table,'./results/qc_check_sheets/qc_table.csv')
+        
+}
 
 
 

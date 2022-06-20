@@ -14,6 +14,7 @@ long_data <- import('./results/preprocessed_data/block_results_long_form.csv')
 ### Transform data ====================
 long_data <- long_data %>%
         mutate(across(c(ptp,
+                        counterbalancing,
                         condition,
                         arrangement,
                         block,

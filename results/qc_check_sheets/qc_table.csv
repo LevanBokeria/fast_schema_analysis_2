@@ -1,0 +1,4 @@
+ptp,counterbalancing,qc_fail_overall,qc_fail_manual,qc_fail_instructions_rt,qc_fail_break_rt,qc_fail_missing_or_fast,qc_fail_mouse_error
+sub_001,cb3,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
+sub_002,cb2,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE
+sub_003,cb1,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE

@@ -1,3 +1,4 @@
 ptp,n_perm,mean_mouse_error,n_perm_less_mouse_error,percentile_sim_mouse_error,qc_fail_mouse_error
-sub_001,10000,119.6139145889555,0,0,FALSE
-sub_002,10000,93.4180362986932,0,0,FALSE
+sub_001,10000,120.81414172152158,0,0,FALSE
+sub_002,10000,127.53856660819156,0,0,FALSE
+sub_003,10000,134.62518428713193,0,0,FALSE

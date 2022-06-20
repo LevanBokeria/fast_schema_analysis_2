@@ -19,6 +19,61 @@ saveData <- T
 
 # Start analysis ##########################################
 
+## Mean by PA rep -------------------------------------------
+
+### All PAs =================================================
+
+mean_by_rep_long_all_pa <- long_data %>%
+        group_by(ptp,
+                 counterbalancing,
+                 condition,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(mouse_error_mean = mean(mouse_error, na.rm = T),
+                  mouse_error_sd   = sd(mouse_error, na.rm = T),
+                  mouse_error_n    = n()) %>%
+        ungroup() %>%
+        mutate(border_dist_closest = 'all',
+               hidden_pa_img_type = 'all')
+
+
+### Near/Far ================================================
+
+mean_by_rep_long_near_far <- long_data %>%
+        filter(!condition %in% c('random_loc','no_schema'),
+               hidden_pa_img_type %in% c('far','near')) %>%
+        droplevels() %>%
+        group_by(ptp,
+                 counterbalancing,
+                 condition,
+                 hidden_pa_img_type,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(mouse_error_mean = mean(mouse_error, na.rm = T),
+                  mouse_error_sd   = sd(mouse_error, na.rm = T),
+                  mouse_error_n    = n()) %>%
+        ungroup() %>%
+        mutate(border_dist_closest = 'all')
+
+### Border distances =========================================
+
+mean_by_rep_long_border_dist <- long_data %>%
+        group_by(ptp,
+                 counterbalancing,
+                 condition,
+                 border_dist_closest,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(mouse_error_mean = mean(mouse_error, na.rm = T),
+                  mouse_error_sd   = sd(mouse_error, na.rm = T),
+                  mouse_error_n    = n()) %>%
+        ungroup() %>%
+        mutate(hidden_pa_img_type = 'all')
+
+### Combine all these ====================================
+
+mean_by_rep_long_all_types <- bind_rows(mean_by_rep_long_all_pa,
+                                        mean_by_rep_long_near_far,
+                                        mean_by_rep_long_border_dist)
+
+
 ## Block 2 average -----------------------------------------
 
 ### All PAs ========================================
@@ -63,5 +118,8 @@ if (saveData){
         
         write_csv(data_summary,
                   './results/data_summary.csv')
+        
+        write_csv(mean_by_rep_long_all_types,
+                  './results/mean_by_rep_long_all_types.csv')
         
 }

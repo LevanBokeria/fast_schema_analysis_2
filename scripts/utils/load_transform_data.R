@@ -25,7 +25,12 @@ long_data <- long_data %>%
                         border_dist_closest,
                         border_dist_summed),as.factor)) %>%
         filter(!condition %in% c('practice','practice2')) %>%
-        droplevels()
+        droplevels() %>%
+        reorder_levels(condition, order = c('schema_c',
+                                            'schema_ic',
+                                            'schema_l',
+                                            'random_loc',
+                                            'no_schema'))
 
 ## summary data --------------------------------------
 
@@ -37,5 +42,24 @@ if (file.exists('./results/data_summary.csv')){
                 mutate(across(c(ptp,
                                  condition,
                                  type),as.factor))
+        
+}
+
+## Mean by rep data -----------------------------------
+if (file.exists('./results/mean_by_rep_long_all_types.csv')){
+        
+        mean_by_rep_long_all_types <- import('./results/mean_by_rep_long_all_types.csv')
+        
+        mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+                mutate(across(c(ptp,
+                                counterbalancing,
+                                condition,
+                                hidden_pa_img_type,
+                                border_dist_closest),as.factor)) %>%
+                reorder_levels(condition, order = c('schema_c',
+                                                    'schema_ic',
+                                                    'schema_l',
+                                                    'random_loc',
+                                                    'no_schema'))
         
 }

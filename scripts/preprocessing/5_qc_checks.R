@@ -141,4 +141,31 @@ good_ptp_data <- good_ptp_data %>%
 
 # Calculate the Q1, Q2, IQR, and Q1-1.5xIQR and Q3+1.5xIQR
 
+## Get the final qc pass fail list ----------------------------------------
+
+qc_table <- qc_table %>%
+        rowwise() %>%
+        mutate(qc_fail_overall = sum(qc_fail_manual,
+                                     qc_fail_instructions_rt,
+                                     qc_fail_break_rt,
+                                     qc_fail_missing_or_fast)) %>%
+        ungroup()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -91,8 +91,8 @@ qc_fail_missing_or_fast <- missing_data_summary %>%
 ## 5. Check against permuted null distributions -------------------------
 
 qc_check_permutation <- permute_mouse_error(long_data,
-                                        load_existing_data = F,
-                                        saveData = T)
+                                        load_existing_data = T,
+                                        saveData = F)
 
 qc_check_permutation <- qc_check_permutation %>%
         select(-c(n_perm,
@@ -157,6 +157,33 @@ qc_table <- qc_table %>%
 qc_table <- qc_table %>%
         relocate(counterbalancing, .after = ptp)
 
+
+# Add batch ID #################################
+
+batch_ids <- qc_table %>%
+        filter(!qc_fail_overall) %>% 
+        droplevels() %>%
+        mutate(sub_num = parse_number(as.character(ptp))) %>% 
+        arrange(sub_num) %>%        
+        add_rownames() %>% 
+        mutate(batch_id = case_when(
+                as.numeric(rowname) <= 20 ~ 1,
+                TRUE ~ ceil((as.numeric(rowname)-20)/15)+1
+                
+        )) %>%
+        select(-rowname)
+
+qc_table <- merge(qc_table,batch_ids,all.x = T)
+
+qc_table <- qc_table %>%
+        mutate(sub_num = parse_number(as.character(ptp))) %>%
+        arrange(sub_num) %>%  
+        select(-sub_num)
+
+qc_table <- qc_table %>%
+        relocate(batch_id, .after = counterbalancing)
+
+
 # Save the qc table ############################
 
 
@@ -165,9 +192,6 @@ if (saveDataCSV){
         export(qc_table,'./results/qc_check_sheets/qc_table.csv')
         
 }
-
-
-
 
 
 

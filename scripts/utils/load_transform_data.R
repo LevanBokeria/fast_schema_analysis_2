@@ -23,7 +23,8 @@ long_data <- long_data %>%
                         hidden_pa_img_row_number_across_blocks,
                         border_dist_closest,
                         border_dist_summed),as.factor)) %>%
-        filter(!condition %in% c('practice','practice2'))
+        filter(!condition %in% c('practice','practice2')) %>%
+        droplevels()
 
 ## summary data --------------------------------------
 

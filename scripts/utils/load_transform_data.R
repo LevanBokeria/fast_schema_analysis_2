@@ -41,7 +41,12 @@ if (file.exists('./results/data_summary.csv')){
         data_summary <- data_summary %>%
                 mutate(across(c(ptp,
                                  condition,
-                                 type),as.factor))
+                                 type),as.factor)) %>%
+                reorder_levels(condition, order = c('schema_c',
+                                                    'schema_ic',
+                                                    'schema_l',
+                                                    'random_loc',
+                                                    'no_schema'))
         
 }
 

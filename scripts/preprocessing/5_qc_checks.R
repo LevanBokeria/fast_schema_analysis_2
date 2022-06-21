@@ -135,7 +135,7 @@ qc_table <- merge(qc_table,
                   by = 'ptp')
 
 
-## 6. Check for 1.5IQR rule --------------------------------------------
+## 7. Check for 1.5IQR rule --------------------------------------------
 
 # Get the list of people passing QC till now
 good_ptp <- qc_table %>%

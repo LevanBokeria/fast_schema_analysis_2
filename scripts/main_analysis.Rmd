@@ -17,7 +17,7 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 
-qc_filter <- F
+qc_filter <- T
 
 source('./scripts/utils/load_transform_data.R')
 
@@ -37,11 +37,58 @@ if (qc_filter){
         
 }
 
+## BF test against 0 
+reportBF = function(x, digits){
+        round(as.numeric(as.vector(x)), digits)
+}
+
 ```
+
+# Normality checks
+
+## Block 2
+
+```{r block-2-normality-checks}
+
+data_summary %>%
+        # filter(type == 'all_pa') %>%
+        droplevels() %>%
+        ggqqplot(x = 'block_2_mouse_error_mean') +
+        ggtitle('All PA: QQ Plots') +
+        facet_wrap(~type)
+
+# Draw a histogram
+data_summary %>%
+        # filter(type == 'all_pa') %>%
+        droplevels() %>%
+        ggplot(aes(x=block_2_mouse_error_mean)) +
+        geom_histogram() +
+        facet_wrap(~type)
+
+
+data_summary %>%
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
+        # filter(type == 'all_pa') %>%
+        droplevels() %>%
+        ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
+        ggtitle('All PA: QQ Plots LOG transformed')+
+        facet_wrap(~type)
+
+# Draw a histogram
+data_summary %>%
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%        
+        filter(type == 'all_pa') %>%
+        droplevels() %>%
+        ggplot(aes(x=block_2_mouse_error_mean_LOG)) +
+        geom_histogram()+
+        facet_wrap(~type)
+
+```
+
 
 # Plot mouse clicks
 
-```{r mouse-heat-plots, fig.width=15, fig.height=10}
+```{r mouse-heat-plots, fig.width=15, fig.height=20}
 
 long_data %>%
         filter(block == 2) %>%
@@ -61,7 +108,7 @@ long_data %>%
 
 ## All data, each condition
 
-```{r raw-learning-curves-and-fits, fig.width=13, fig.height=10}
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=20}
 
 
 # Plot the fits
@@ -161,7 +208,7 @@ print(fig_each_ptp_lm)
 
 ```
 
-## Near vs far, overlaid
+## Near vs far, across-participants
 
 ```{r landmark-raw-learning-curves-and-fits-overlaid, fig.width=8, fig.height=5}
 
@@ -253,135 +300,201 @@ print(fig)
 
 ```
 
+## Near vs far diff, across participants:
 
+```{r near-far-diff-across-reps-overlaid, fig.width=7, fig.height=5}
 
-# Scatter plots of dependent variables:
-
-## Rough measures: last 2 reps and last 4 reps
-
-```{r plot-rough-measures-overall, fig.width=5, fig.height=4}
-
-sum_stats_each_participant %>%
-        filter(new_pa_status == 'both',
-               accuracy_type == 'mouse_error',
-               border_dist == 'all') %>%
+fig <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type %in% c('near','far'),
+               !condition %in% c('random_locations','no_schema'),
+               border_dist_closest == 'all'
+               ) %>%
         droplevels() %>%
-        ggplot(aes(x=condition,
-                   y=last_four_mean)) +
-        geom_violin() +
-        geom_dotplot(binaxis = 'y',
-                     stackdir = 'center',
-                     stackratio = 1,
-                     dotsize = 1,
-                     fill = 'black',
-                     alpha = 0.2) +
-        geom_line(aes(group=ptp_trunk,
-                      color=ptp_trunk)) +
-        facet_wrap(~accuracy_type, nrow = 1) +
-        stat_summary(fun=mean, geom="point", shape=20, size=5, 
-                     color="red", fill="red") + 
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",size=1,width=0.1,color='red') +
-        theme(legend.position = '') +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        ggtitle('Overall, last 4 reps')
 
-sum_stats_each_participant %>%
-        filter(new_pa_status == 'both',
-               accuracy_type == 'mouse_error',
-               border_dist == 'all') %>%
-        droplevels() %>%
-        ggplot(aes(x=condition,
-                   y=log_last_four_mean)) +
-        geom_violin() +
-        geom_dotplot(binaxis = 'y',
-                     stackdir = 'center',
-                     stackratio = 1,
-                     dotsize = 1,
-                     fill = 'black',
-                     alpha = 0.2) +
-        geom_line(aes(group=ptp_trunk,
-                      color=ptp_trunk)) +
-        facet_wrap(~accuracy_type, nrow = 1) +
-        stat_summary(fun=mean, geom="point", shape=20, size=5, 
-                     color="red", fill="red") + 
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",size=1,width=0.1,color='red') +
-        theme(legend.position = '') +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        ggtitle('Overall, LOG last 4 reps')
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition,
+                                hidden_pa_img_row_number_across_blocks),
+                    names_from = hidden_pa_img_type,
+                    values_from = mouse_error_mean) %>% 
+        mutate(far_minus_near = far - near) %>% 
+        
+        group_by(condition,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(n = n(),
+                  far_minus_near_mean_across_ptp = mean(far_minus_near,na.rm = T)) %>% 
+        ungroup() %>%
+
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=far_minus_near_mean_across_ptp,
+                   color=condition,
+                   group=condition)) +        
+        
+        geom_point(size=1) +
+        geom_line(size=0.5) +
+
+        ggtitle('Mouse euclidean distance') +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        # theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
+
+print(fig)
+
 
 ```
 
-### near_pa vs far_pa:
+# Block 2 mean performance:
 
-```{r plot-rough-measures-new_pa_status}
+## Compare conditions, across PAs:
 
-# Last 4
-sum_stats_each_participant %>%
-        filter(new_pa_status != 'both',
-               !condition %in% c('random_locations','no_schema'),
-               accuracy_type == 'mouse_error',
-               border_dist == '3_4') %>%
+```{r block-2-conditions}
+
+data_summary %>%
+        filter(type == 'all_pa') %>%
         droplevels() %>%
-        pivot_wider(id_cols = c(ptp_trunk,
-                                condition,
-                                accuracy_type),
-                    names_from = new_pa_status,
-                    values_from = last_four_mean) %>% 
-        mutate(near_far_diff = near_pa - far_pa ) %>%
-        ggplot(aes(x=condition,y=near_far_diff)) +
+        
+        ggplot(aes(x=condition,
+                   y=block_2_mouse_error_mean)) +
         geom_violin() +
-        # geom_jitter(width = 0.1, alpha = 0.2) +
-        geom_dotplot(binaxis='y', stackdir='center',
-                     stackratio=1, dotsize=1, fill="black",
-                     alpha=0.3) +        
-        geom_line(aes(group=ptp_trunk,
-                      color=ptp_trunk),
-                  alpha = 0.5) +
-        stat_summary(fun=mean, geom="point", shape=20, size=5, 
-                     color="red", fill="red") +   
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",size=1,width=0.1,color='red') +        
-        facet_wrap(~accuracy_type, nrow = 1) +
-        ylab('Diff') + 
-        theme(legend.position = '') +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        ggtitle('Border dist 3_4; Far minus near-PA, last 4') +
-        geom_hline(yintercept = 0, linetype = 'dashed')
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, comparing conditions')
 
-# Last 4 LOG
-sum_stats_each_participant %>%
-        filter(new_pa_status != 'both',
-               !condition %in% c('random_locations','no_schema'),
-               accuracy_type == 'mouse_error',
-               border_dist == '3_4') %>%
-        droplevels() %>%
-        pivot_wider(id_cols = c(ptp_trunk,
-                                condition,
-                                accuracy_type),
-                    names_from = new_pa_status,
-                    values_from = log_last_four_mean) %>% 
-        mutate(near_far_diff = near_pa - far_pa ) %>%
-        ggplot(aes(x=condition,y=near_far_diff)) +
-        geom_violin() +
-        # geom_jitter(width = 0.1, alpha = 0.2) +
-        geom_dotplot(binaxis='y', stackdir='center',
-                     stackratio=1, dotsize=1, fill="black",
-                     alpha=0.3) +        
-        geom_line(aes(group=ptp_trunk,
-                      color=ptp_trunk),
-                  alpha = 0.5) +
-        stat_summary(fun=mean, geom="point", shape=20, size=5, 
-                     color="red", fill="red") +   
-        stat_summary(fun.data = mean_cl_normal,
-                     geom = "errorbar",size=1,width=0.1,color='red') +        
-        facet_wrap(~accuracy_type, nrow = 1) +
-        ylab('Diff') + 
-        theme(legend.position = '') +
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-        ggtitle('Border dist 3_4; Far minus near-PA, LOG last 4') +
-        geom_hline(yintercept = 0, linetype = 'dashed')
 ```
 
+
+
+## Near vs Far within each condition:
+
+```{r block-2-conditions-near-far}
+
+data_summary %>%
+        filter(type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = type,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed')
+
+```
+
+### Bayes Factor
+
+```{r bayes-analysis-schema-c-far-vs-near}
+
+data_for_bf_1 <- data_summary %>%
+        filter(type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = type,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(far_minus_near = far - near) %>%
+        select(far_minus_near) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf <- reportBF(ttestBF(
+        data_for_bf_1,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+
+# Near PAs: schema-C vs schema-l
+
+## Plot:
+
+```{r near-pa-schema-c-vs-schema-l, fig.width=3, fig.height=4}
+
+data_summary %>%
+        filter(type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(schema_c_minus_schema_l = schema_c - schema_l) %>% 
+        
+        ggplot(aes(x='difference',
+                   y=schema_c_minus_schema_l)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, Near-PA, schema-c vs schema-l') +
+        geom_hline(yintercept = 0, linetype = 'dashed')
+
+```
+
+## Bayes Factor
+
+```{r bf-analysis-near-schema-c-vs-schema-l}
+
+data_for_bf_2 <- data_summary %>%
+        filter(type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean) %>% 
+        mutate(schema_c_minus_schema_l = schema_c - schema_l) %>% 
+        select(schema_c_minus_schema_l) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf <- reportBF(ttestBF(
+        data_for_bf_2,
+        nullInterval = null_interval
+)[1],4)
+
+```
 

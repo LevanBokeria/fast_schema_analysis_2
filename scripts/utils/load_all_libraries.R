@@ -23,4 +23,6 @@ pacman::p_load(pacman,
                pdist,
                moments,
                LambertW,
-               tidyverse)
+               tidyverse,
+               BayesFactor,
+               ggpubr)

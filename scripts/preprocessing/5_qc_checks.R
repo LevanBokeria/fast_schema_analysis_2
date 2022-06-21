@@ -160,10 +160,21 @@ good_ptp_data <- good_ptp_data %>%
         summarise(block_2_mouse_error_mean = mean(block_2_mouse_error_mean, na.rm = T))
 
 # Calculate the Q1, Q2, IQR, and Q1-1.5xIQR and Q3+1.5xIQR
+qc_check_iqr <- good_ptp_data %>%
+        mutate(Q1 = quantile(.$block_2_mouse_error_mean, probs = 0.25),
+               Q3 = quantile(.$block_2_mouse_error_mean, probs = 0.75),
+               IQR = Q3 - Q1,
+               lower_boundary = Q1 - IQR * 1.5,
+               upper_boundary = Q3 + IQR * 1.5,
+               qc_fail_iqr = block_2_mouse_error_mean < lower_boundary | 
+                       block_2_mouse_error_mean > upper_boundary)
 
 
-
-
+# Merge with the main table
+qc_table <- merge(qc_table,
+                  select(qc_check_iqr,c(ptp,qc_fail_iqr)),
+                  by = 'ptp',
+                  all.x = T)
 
 
 ## Get the final qc pass fail list ----------------------------------------
@@ -173,7 +184,10 @@ qc_table <- qc_table %>%
         mutate(qc_fail_overall = sum(qc_fail_manual,
                                      qc_fail_instructions_rt,
                                      qc_fail_break_rt,
-                                     qc_fail_missing_or_fast) > 0,
+                                     qc_fail_missing_or_fast,
+                                     qc_fail_display_issues,
+                                     qc_fail_iqr,
+                                     na.rm = T) > 0,
                .before = qc_fail_manual) %>%
         ungroup()
 
@@ -187,8 +201,8 @@ batch_ids <- qc_table %>%
         filter(!qc_fail_overall) %>% 
         droplevels() %>%
         mutate(sub_num = parse_number(as.character(ptp))) %>% 
-        arrange(sub_num) %>%        
-        add_rownames() %>% 
+        arrange(sub_num) %>%     
+        rownames_to_column() %>% 
         mutate(batch_id = case_when(
                 as.numeric(rowname) <= 20 ~ 1,
                 TRUE ~ ceil((as.numeric(rowname)-20)/15)+1

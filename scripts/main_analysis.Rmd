@@ -430,7 +430,7 @@ data_for_bf_1 <- data_summary %>%
 
 null_interval <- c(0,Inf)
 
-bf <- reportBF(ttestBF(
+bf_1 <- reportBF(ttestBF(
         data_for_bf_1,
         nullInterval = null_interval
 )[1],4)
@@ -491,7 +491,7 @@ data_for_bf_2 <- data_summary %>%
 
 null_interval <- c(0,Inf)
 
-bf <- reportBF(ttestBF(
+bf_2 <- reportBF(ttestBF(
         data_for_bf_2,
         nullInterval = null_interval
 )[1],4)

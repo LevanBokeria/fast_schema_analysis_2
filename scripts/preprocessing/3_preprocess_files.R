@@ -194,6 +194,7 @@ for (iFile in incoming_files){
         curr_ptp_break_rt <- curr_ptp_break_rt %>%
                 as_tibble() %>% 
                 rename(time_spent_msec = value) %>%
+                mutate(time_spent_mins = time_spent_msec/1000/60) %>%
                 mutate(break_idx = 1:nrow(.), .before = time_spent_msec) %>%
                 mutate(ptp = json_decoded$prolific_ID, .before = break_idx)
                 

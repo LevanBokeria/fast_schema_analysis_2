@@ -65,8 +65,8 @@ qc_check_break_rt <- break_rt %>%
                 )
 
 ## 4. Missing data ---------------------------------------
-rt_threshold <- 3
-missed_perc_threshold <- 80
+rt_threshold <- 350
+missed_perc_threshold <- 20
 
 long_data <- long_data %>%
         mutate(missed_or_too_fast = case_when(

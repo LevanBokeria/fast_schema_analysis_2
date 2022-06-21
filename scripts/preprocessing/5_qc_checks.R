@@ -86,7 +86,7 @@ missing_data_summary <- long_data %>%
                   perc_missed_or_fast = n_missed_or_fast * 100 / n_trials) %>%
         ungroup()
 
-qc_fail_missing_or_fast <- missing_data_summary %>%
+qc_check_missing_or_fast <- missing_data_summary %>%
         group_by(ptp,
                  counterbalancing) %>%
         summarise(qc_fail_missing_or_fast = any(perc_missed_or_fast > missed_perc_threshold))
@@ -103,6 +103,16 @@ qc_check_permutation <- qc_check_permutation %>%
                   n_perm_less_mouse_error,
                   percentile_sim_mouse_error))
 
+## 6. Check for display issues -----------------------------------------
+
+# Did they have to scroll?
+qc_check_display_issues <- long_data %>%
+        group_by(ptp) %>%
+        summarise(n_unique_scroll = length(unique(display_information.window_scroll_y))) %>% 
+        ungroup() %>%
+        mutate(qc_fail_display_issues = n_unique_scroll > 4)
+
+
 ## Combine all the qc tables ----------------------------------------------
 qc_table <- merge(qc_check_debrief_and_errors,
                   qc_check_instructions_rt,
@@ -113,11 +123,15 @@ qc_table <- merge(qc_table,
                   by = 'ptp')
 
 qc_table <- merge(qc_table,
-                  qc_fail_missing_or_fast,
+                  qc_check_missing_or_fast,
                   by = 'ptp')
 
 qc_table <- merge(qc_table,
                   qc_check_permutation,
+                  by = 'ptp')
+
+qc_table <- merge(qc_table,
+                  qc_check_display_issues,
                   by = 'ptp')
 
 
@@ -129,7 +143,8 @@ good_ptp <- qc_table %>%
                qc_fail_missing_or_fast == F,
                qc_fail_manual == F,
                qc_fail_mouse_error == F,
-               qc_fail_instructions_rt == F) %>%
+               qc_fail_instructions_rt == F,
+               qc_fail_display_issues == F) %>%
         select(ptp) %>% .[[1]]
 
 # Get data from only these participants 
@@ -145,6 +160,11 @@ good_ptp_data <- good_ptp_data %>%
         summarise(block_2_mouse_error_mean = mean(block_2_mouse_error_mean, na.rm = T))
 
 # Calculate the Q1, Q2, IQR, and Q1-1.5xIQR and Q3+1.5xIQR
+
+
+
+
+
 
 ## Get the final qc pass fail list ----------------------------------------
 

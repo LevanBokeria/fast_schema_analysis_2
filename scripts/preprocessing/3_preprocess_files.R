@@ -259,14 +259,14 @@ if (saveDataCSV){
         print('Overwriting data...')
         
         write_csv(block_results_all_ptp,'./results/preprocessed_data/block_results_long_form.csv')
-        # write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
-        # write_csv(int_fb_all_ptp,'./results/preprocessed_data/intermediate_feedback_all_ptp.csv')
-        # write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
-        # write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv',
-        #           row.names = F)
-        # write.csv(instructions_rt_all_ptp,
-        #           './results/preprocessed_data/instructions_rt_all_ptp.csv',
-        #           row.names = FALSE)
+        write_csv(feedback_all_ptp,'./results/preprocessed_data/feedback_all_ptp.csv')
+        write_csv(int_fb_all_ptp,'./results/preprocessed_data/intermediate_feedback_all_ptp.csv')
+        write_csv(listings_all_ptp,'./results/preprocessed_data/listings_all_ptp.csv')
+        write.csv(break_rt_all_ptp,'./results/preprocessed_data/break_rt_all_ptp.csv',
+                  row.names = F)
+        write.csv(instructions_rt_all_ptp,
+                  './results/preprocessed_data/instructions_rt_all_ptp.csv',
+                  row.names = FALSE)
         
         print('Data overwritten.')
 }

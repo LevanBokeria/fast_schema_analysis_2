@@ -322,3 +322,19 @@ sub_025,schema_l,42648.59999999963,"tub, sandals, knob, card, mirror, curtain","
 sub_025,random_loc,51173.5,"sink, cucumber, bench, traffic light, beer, tomato","ATM, xmass-tree, cow, drums, bulb, chair"
 sub_025,no_schema,46938.59999999963,"bread, mug, squirl, tire, cloud, bee",NA
 sub_025,schema_c,67027.59999999963,"cart, tree, foosball, bus, ice, ladybug","microwave, cube, treadmill, table, bottle, hose"
+sub_026,schema_l,178889,"Cupcake, escliater, water fountin, bed, basketball, socket","pasta, shower head, table, onion, staring wheel and cabinet "
+sub_026,random_loc,126793,"Bath, slipper, door handle, dimond, wing mirror, curtains ","chair, salt, school bus, map, tv, donut "
+sub_026,no_schema,87135.70000000298,"cash machine, Christmas tree, cow, drum kit, light bulb, rocking chair",NA
+sub_026,schema_c,91150.10000000894,"present, pumkin, kiwi, phone box, flower, shuvel ","bread, coffee mug, rat, wheel, cloud, bee
+"
+sub_026,schema_ic,81534,"Trolly, tree, football game, coach, ice cube, ladybird","microwave, cube, walking, pool, beer, hose "
+sub_027,schema_ic,86694.20000000112,"Sofa, fridge, corn, keys ","Pasta, Shower, Table, Onion, Steering Wheel, Bookcase"
+sub_027,schema_l,37295.59999999963,"onion, pasta, basketball, table, escalator","chair, salt, bus, map, tv, doughnut"
+sub_027,random_loc,52281.90000000037,"flip flop, wing mirror","atm, tree, cow, drums, bulb, rocker"
+sub_027,no_schema,25574.800000000745,"tortilla, cup, squirrel, wheel, cloud, bee",NA
+sub_027,schema_c,55759,"cup, table, bee, tomatoes, cucumber, chair, wheel","microwave, rubiks cube, treadmill, pool table, bottle, hose"
+sub_028,schema_ic,68437.70000001788,"cupcake, stairs, box, bed, basketball, socket","macaroni, shower, table, onion, steering wheel, shelf"
+sub_028,schema_l,36000.89999997616,"tub, slipper, door handle, card, mirror, curtain","chair, salt, bus, map, tv, doughnut"
+sub_028,random_loc,36389.40000000596,"sink, cucumber, table, traffic light, beer, tomatoes","ATM, tree, cow, drums, lightbulb, chair"
+sub_028,no_schema,21742.90000000596,"chip, mug, squirrel, wheel, cloud, bee",NA
+sub_028,schema_c,39289.90000000596,"cart, tree, game, bus, ice, bug","microwave, cube, treadmill, pool, bottle, hose "

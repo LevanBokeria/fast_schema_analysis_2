@@ -50,41 +50,50 @@ reportBF = function(x, digits){
 
 ```{r block-2-normality-checks}
 
+# Density plot
 data_summary %>%
-        # filter(type == 'all_pa') %>%
-        droplevels() %>%
-        ggqqplot(x = 'block_2_mouse_error_mean') +
-        ggtitle('All PA: QQ Plots') +
-        facet_wrap(~type)
-
-# Draw a histogram
-data_summary %>%
-        # filter(type == 'all_pa') %>%
-        droplevels() %>%
-        ggplot(aes(x=block_2_mouse_error_mean)) +
+        ggplot(aes(x=block_2_mouse_error_mean,
+                   y = ..density..)) +
         geom_histogram() +
-        facet_wrap(~type)
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~type) +
+        ggtitle('Block 2, RAW: Histogram and Density')
 
+# QQ Plot
 
 data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
-        # filter(type == 'all_pa') %>%
-        droplevels() %>%
-        ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
-        ggtitle('All PA: QQ Plots LOG transformed')+
-        facet_wrap(~type)
-
-# Draw a histogram
-data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%        
-        filter(type == 'all_pa') %>%
-        droplevels() %>%
-        ggplot(aes(x=block_2_mouse_error_mean_LOG)) +
-        geom_histogram()+
+        ggqqplot(x = 'block_2_mouse_error_mean') +
+        ggtitle('Block 2, RAW: QQ Plots') +
         facet_wrap(~type)
 
 ```
 
+```{r log-transformations}
+
+# Density plot
+data_summary %>%
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
+        ggplot(aes(x=block_2_mouse_error_mean_LOG,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~type) +
+        ggtitle('Block 2, LOG: Histogram and Density')
+
+# QQ Plot
+
+data_summary %>%
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
+        ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
+        ggtitle('Block 2, LOG: QQ Plots') +
+        facet_wrap(~type)
+
+data_summary <- data_summary %>%
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean))
+
+```
 
 # Plot mouse clicks
 
@@ -377,6 +386,28 @@ data_summary %>%
 
 ```
 
+```{r block-2-LOG-conditions}
+
+data_summary %>%
+        filter(type == 'all_pa') %>%
+        droplevels() %>%
+        
+        ggplot(aes(x=condition,
+                   y=block_2_mouse_error_mean_LOG)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2 LOG, comparing conditions')
+
+```
+
 
 
 ## Near vs Far within each condition:
@@ -411,6 +442,36 @@ data_summary %>%
 
 ```
 
+```{r block-2-LOG-conditions-near-far}
+
+data_summary %>%
+        filter(type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = type,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2 LOG, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed')
+
+```
+
 ### Bayes Factor
 
 ```{r bayes-analysis-schema-c-far-vs-near}
@@ -432,6 +493,30 @@ null_interval <- c(0,Inf)
 
 bf_1 <- reportBF(ttestBF(
         data_for_bf_1,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
+```{r bayes-analysis-schema-c-far-vs-near-LOG}
+
+data_for_bf_1_LOG <- data_summary %>%
+        filter(type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = type,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(far_minus_near = far - near) %>%
+        select(far_minus_near) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf_1_LOG <- reportBF(ttestBF(
+        data_for_bf_1_LOG,
         nullInterval = null_interval
 )[1],4)
 
@@ -472,6 +557,36 @@ data_summary %>%
 
 ```
 
+```{r near-pa-schema-c-vs-schema-l-LOG, fig.width=3, fig.height=4}
+
+data_summary %>%
+        filter(type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(schema_c_minus_schema_l = schema_c - schema_l) %>% 
+        
+        ggplot(aes(x='difference',
+                   y=schema_c_minus_schema_l)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2 LOG, Near-PA, schema-c vs schema-l') +
+        geom_hline(yintercept = 0, linetype = 'dashed')
+
+```
+
 ## Bayes Factor
 
 ```{r bf-analysis-near-schema-c-vs-schema-l}
@@ -498,3 +613,26 @@ bf_2 <- reportBF(ttestBF(
 
 ```
 
+```{r bf-analysis-near-schema-c-vs-schema-l-LOG}
+
+data_for_bf_2_LOG <- data_summary %>%
+        filter(type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(schema_c_minus_schema_l = schema_c - schema_l) %>% 
+        select(schema_c_minus_schema_l) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf_2_LOG <- reportBF(ttestBF(
+        data_for_bf_2_LOG,
+        nullInterval = null_interval
+)[1],4)
+
+```

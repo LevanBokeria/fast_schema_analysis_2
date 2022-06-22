@@ -22,7 +22,7 @@ source('./scripts/utils/qc_checks_permutations.R')
 
 saveDataCSV <- T
 
-load_qc_perm_data <- T
+load_qc_perm_data <- F
 save_qc_perm_data <- T
 
 # Start the QC analysis ##################

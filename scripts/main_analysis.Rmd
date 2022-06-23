@@ -147,7 +147,7 @@ print(fig_each_ptp)
 
 ## All data, overlaid
 
-```{r learning-curves-across-part, fig.width=5, fig.height=4}
+```{r learning-curves-across-part, fig.width=7, fig.height=6}
 
 # Plot the fits
 fig_each_ptp <- mean_by_rep_long_all_types %>%
@@ -157,21 +157,34 @@ fig_each_ptp <- mean_by_rep_long_all_types %>%
         group_by(condition,
                  hidden_pa_img_row_number_across_blocks) %>%
         summarise(n = n(),
-                  mouse_error_mean_across_ptp = mean(mouse_error_mean,na.rm = T)) %>% 
-        ungroup() %>%
+                  mouse_error_mean_across_ptp = mean(mouse_error_mean,na.rm = T),
+                  mouse_error_sd_across_ptp = sd(mouse_error_mean, na.rm = T),
+                  sem = mouse_error_sd_across_ptp/sqrt(n),
+                  upper_95_ci = mouse_error_mean_across_ptp + qt(0.975,df = n-1)*sem,
+                  lower_95_ci = mouse_error_mean_across_ptp - qt(0.975,df = n-1)*sem) %>% 
+        ungroup() %>% 
         ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
                    y=mouse_error_mean_across_ptp,
                    color=condition)) +
-        geom_point() +
-        geom_line() +
+        geom_point(size=2) +
+        geom_line(size=1) +
+        # geom_ribbon(aes(ymin = lower_95_ci, 
+        #                 ymax = upper_95_ci,
+        #                 group=condition,
+        #                 color=condition),
+        #             alpha = 0.1) +
 
         # facet_grid(~condition) +
         ggtitle(paste('Mouse euclidean distance; Across participants',sep='')) +
         xlab('Image repetition') +
         ylab('Mouse euclidean distance ') +
         scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,200,25)) +  
+        coord_cartesian(ylim = c(0,200)) +
         # theme(legend.position = 'top') +
-        geom_vline(xintercept = 4.5, linetype = 'dashed') 
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+
 
 
 print(fig_each_ptp)
@@ -342,11 +355,11 @@ fig <- mean_by_rep_long_all_types %>%
         geom_point(size=1) +
         geom_line(size=0.5) +
 
-        ggtitle('Mouse euclidean distance') +
+        ggtitle('Far minus Near') +
         xlab('Image repetition') +
-        ylab('Mouse euclidean distance') +
+        ylab('Far minus Near') +
         scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
-        scale_y_continuous(breaks=seq(0,250,50)) +
+        scale_y_continuous(breaks=seq(-100,100,10)) +
 
         # theme(legend.position = 'top') +
         geom_vline(xintercept = 4.5, linetype = 'dashed') +
@@ -636,3 +649,60 @@ bf_2_LOG <- reportBF(ttestBF(
 )[1],4)
 
 ```
+
+# Reaction times 
+
+## Comparing conditions 
+
+```{r rt-diff-conditions}
+
+data_summary %>%
+        filter(type == 'all_pa') %>%
+        droplevels() %>%
+        
+        ggplot(aes(x=condition,
+                   y=block_2_rt_mean)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2 RT, comparing conditions')
+
+```
+
+```{r rt-conditions-near-far}
+
+data_summary %>%
+        filter(type != 'all_pa') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = type,
+                    values_from = block_2_rt_mean) %>% 
+        mutate(far_minus_near = far - near) %>%
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near)) +
+        geom_violin() +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_jitter(height = 0,
+                    width = 0.06,
+                    alpha = 0.3) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2 RT, comparing conditions, Far-Near') +
+        geom_hline(yintercept = 0, linetype = 'dashed')
+
+```
+

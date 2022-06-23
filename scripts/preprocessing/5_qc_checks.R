@@ -1,6 +1,7 @@
 # Description ############################
 
-# 1. Check the manual fail table
+# 1. Check the manual fail table. This file must first be manually updated, based
+# on the participants' feedback.
 # 
 # 2. Check 1 sec at instructions 
 # 
@@ -10,7 +11,9 @@
 # 
 # 5. Check the percentile of the permuted null distribution
 # 
-# 6. Check for 1.5IQR rule, relative to non-fail participants!
+# 6. Check for any display issues, like having to scroll
+#
+# 7. Check for 1.5IQR rule, relative to non-fail participants!
 
 # Global setup ###########################
 
@@ -20,7 +23,7 @@ source('./scripts/utils/load_all_libraries.R')
 source('./scripts/utils/load_transform_data.R')
 source('./scripts/utils/qc_checks_permutations.R')
 
-saveDataCSV <- F
+saveDataCSV <- T
 
 load_qc_perm_data <- T
 save_qc_perm_data <- F
@@ -230,7 +233,6 @@ qc_table %>%
         count(counterbalancing) %>% print()
 
 # Save the qc table ############################
-
 
 if (saveDataCSV){
         

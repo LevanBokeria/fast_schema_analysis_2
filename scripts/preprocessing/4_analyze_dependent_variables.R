@@ -2,7 +2,9 @@
 
 # This code will load the long form data and analyze the following variables:
 # - average block 2 mouse error
-# - learning rate across both blocks. 
+# - Average mouse error for each of the 8 repetitions of the PAs. 
+
+# The analysis is done separately for all hiddent-PAs and far-PAs and near-PAs.
 
 # The data will be saved as a csv file
 
@@ -86,6 +88,8 @@ data_summary_all_pas <- long_data %>%
         summarise(n_trials = n(),
                   block_2_mouse_error_mean = mean(mouse_error, na.rm = T),
                   block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
+                  block_2_rt_mean = mean(rt, na.rm = T),
+                  block_2_rt_sd   = sd(rt, na.rm = T),                  
                   type = 'all_pa') %>% 
         ungroup()
 
@@ -100,7 +104,9 @@ data_summary_near_far_pas <- long_data %>%
                  hidden_pa_img_type) %>%
         summarise(n_trials = n(),
                   block_2_mouse_error_mean = mean(mouse_error, na.rm = T),
-                  block_2_mouse_error_sd   = sd(mouse_error, na.rm = T)) %>% 
+                  block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
+                  block_2_rt_mean = mean(rt, na.rm = T),
+                  block_2_rt_sd   = sd(rt, na.rm = T)) %>% 
         ungroup() %>%
         rename(type = hidden_pa_img_type)
 

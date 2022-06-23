@@ -1,7 +1,14 @@
 # Description ############################
 
+# This code loads the batch data downloaded from JATOS, and extracts prolific 
+# IDs, so then I can manually assign random IDs to them and substitute them
+# in the data files.
 
-
+# 1. Download the data from JATOS.
+# 2. Run this code.
+# 3. Manually copy to prolific IDs into the prol_id_to_rand_id.csv file, and 
+# assign new random IDs.
+# 4. Run 2_save_individual_files.R code.
 
 
 # Global setup ###########################

@@ -1,6 +1,8 @@
 # Description ############################
 
-
+# This code will load up data submission modules for each participant, and 
+# preprocess those JSON files. It will save bunch of dataframes in a long-format
+# of the data: feedbacks, trial-by-trial-results, etc.
 
 # Global setup ###########################
 

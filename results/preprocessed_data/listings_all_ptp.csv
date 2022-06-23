@@ -338,3 +338,59 @@ sub_028,schema_l,36000.89999997616,"tub, slipper, door handle, card, mirror, cur
 sub_028,random_loc,36389.40000000596,"sink, cucumber, table, traffic light, beer, tomatoes","ATM, tree, cow, drums, lightbulb, chair"
 sub_028,no_schema,21742.90000000596,"chip, mug, squirrel, wheel, cloud, bee",NA
 sub_028,schema_c,39289.90000000596,"cart, tree, game, bus, ice, bug","microwave, cube, treadmill, pool, bottle, hose "
+sub_029,random_loc,43820.10000002384,"pasta, shower head, table, red onion, steering wheel, shelf","pasta, shower head, table, red onion, steering wheel, shelf"
+sub_029,no_schema,23289.899999976158,"table, salt, bus, map, screen, donut",NA
+sub_029,schema_c,31632.19999998808,"ATM, Christmas tree, cow, drumkit, bulb, chair ","ATM, Christmas tree, cow, drumkit, bulb, chair "
+sub_029,schema_ic,25906.19999998808,"crisp, flask, squirrel, wheel, cloud, bee ","crisp, flask, squirrel, wheel, cloud, bee "
+sub_029,schema_l,26924.200000047684,"microwave, rubix cube, treadmill, snooker table, bottle, wire","microwave, rubix cube, treadmill, snooker table, bottle, wire"
+sub_030,random_loc,42385.60000000149,"Cupcake
+Escalator
+Record player
+Bed
+Basketball
+Plug Socket
+","Pasta
+Shower Head
+Table
+Onion
+Steering Wheel
+Cabinet"
+sub_030,no_schema,20014.5,"Chair
+Salt Shaker
+School Bus
+Map
+TV
+Doughnut",NA
+sub_030,schema_c,27924.199999999255,"Sink
+Cucumber
+Bench
+Traffic Lights
+Beer
+Tomatoes","ATM
+Christmas Tree
+Cow
+Drums
+Lightbulb
+Chair"
+sub_030,schema_ic,31437.199999999255,"Present
+Pumpkin
+Kiwi
+Phone
+Rose
+Shovel","Chip
+Cup
+Squirrel
+Wheel
+Cloud
+Wasp"
+sub_030,schema_l,32381,"Trolley
+Tree
+Foosball Table
+Coach
+Ice Cub
+Ladybird","Microwave
+Rubiks Cube
+Treadmill
+Pool Table
+Bottle
+Hose"

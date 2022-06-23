@@ -1,8 +1,8 @@
 # Description ############################
 
-
-
-
+# This script will load the group data file downloaded from JATOS, find the 
+# 'data submission' modules for each participant, and save those as separate
+# RData files. Prolific IDs are substituted with sub_00* strings.
 
 # Global setup ###########################
 

@@ -35,7 +35,7 @@ mean_by_rep_long_all_pa <- long_data %>%
                   mouse_error_n    = n()) %>%
         ungroup() %>%
         mutate(border_dist_closest = 'all',
-               hidden_pa_img_type = 'all')
+               hidden_pa_img_type = 'all_pa')
 
 
 ### Near/Far ================================================
@@ -67,7 +67,7 @@ mean_by_rep_long_border_dist <- long_data %>%
                   mouse_error_sd   = sd(mouse_error, na.rm = T),
                   mouse_error_n    = n()) %>%
         ungroup() %>%
-        mutate(hidden_pa_img_type = 'all')
+        mutate(hidden_pa_img_type = 'all_pa')
 
 ### Combine all these ====================================
 
@@ -90,7 +90,7 @@ data_summary_all_pas <- long_data %>%
                   block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
                   block_2_rt_mean = mean(rt, na.rm = T),
                   block_2_rt_sd   = sd(rt, na.rm = T),                  
-                  type = 'all_pa') %>% 
+                  hidden_pa_img_type = 'all_pa') %>% 
         ungroup()
 
 ### Near and Far separately ========================================
@@ -107,8 +107,7 @@ data_summary_near_far_pas <- long_data %>%
                   block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
                   block_2_rt_mean = mean(rt, na.rm = T),
                   block_2_rt_sd   = sd(rt, na.rm = T)) %>% 
-        ungroup() %>%
-        rename(type = hidden_pa_img_type)
+        ungroup()
 
 ### Combine =============================
 data_summary <- NULL

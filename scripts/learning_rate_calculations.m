@@ -14,7 +14,7 @@ dbstop if error;
 
 warning('off','MATLAB:table:RowsAddedExistingVars')
 
-saveData = 0;
+saveData = 1;
 
 %% Load and prepare the dataset
 opts = detectImportOptions('./results/mean_by_rep_long_all_types.csv');
@@ -30,7 +30,8 @@ all_ptp = unique(df.ptp);
 n_ptp   = length(all_ptp);
 
 all_conditions        = unique(df.condition);
-all_hidden_pa_types = unique(df.hidden_pa_img_type);
+all_hidden_pa_types   = unique(df.hidden_pa_img_type);
+all_border_dist_types = unique(df.border_dist_closest);
 
 %% Start the for loop
 params_two   = [250,0.1];
@@ -42,21 +43,22 @@ tbl = table;
 ctr = 1;
 for iPtp = 1:n_ptp
     iPtp
+    
     for iCond = 1:length(all_conditions)
         iCond
         
         for iType = 1:length(all_hidden_pa_types)
             iType
             
-            if strcmp(all_conditions{iCond},'no_schema') | strcmp(all_conditions{iCond},'random_loc')
-                
-                if strcmp(all_hidden_pa_types{iType},'near') | strcmp(all_hidden_pa_types{iType},'far')
-                    
-                    continue;
-                    
-                end
-                
-            end
+%             if strcmp(all_conditions{iCond},'no_schema') | strcmp(all_conditions{iCond},'random_loc')
+%                 
+%                 if strcmp(all_hidden_pa_types{iType},'near') | strcmp(all_hidden_pa_types{iType},'far')
+%                     
+%                     continue;
+%                     
+%                 end
+%                 
+%             end
             
             curr_ptp  = all_ptp{iPtp};
             curr_cond = all_conditions{iCond};
@@ -76,7 +78,7 @@ for iPtp = 1:n_ptp
             % Save in a table
             tbl.ptp{ctr} = curr_ptp;
             tbl.condition{ctr} = curr_cond;
-            tbl.hidden_pa_status{ctr} = curr_type;
+            tbl.hidden_pa_img_type{ctr} = curr_type;
             tbl.sse_two_param(ctr) = fval;
             tbl.intercept_two_param(ctr) = out_two_params(1);
             tbl.learning_rate_two_param(ctr) = out_two_params(2);

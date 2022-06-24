@@ -22,7 +22,7 @@ function [out_params,fval] = est_learning_rate(ptp_data,params,plotEstimation,wh
             
         elseif strcmp(which_model,'two_parameters')
             
-            y_hat = x(1) * exp(-x(2) * (trials - 1))';
+            y_hat = x(1) * exp(-x(2) * (trials - 1));
             
         else
             error('Incorrect model type given!')

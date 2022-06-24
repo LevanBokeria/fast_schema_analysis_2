@@ -1,4 +1,4 @@
-ptp,counterbalancing,condition,n_trials,block_2_mouse_error_mean,block_2_mouse_error_sd,block_2_rt_mean,block_2_rt_sd,type
+ptp,counterbalancing,condition,n_trials,block_2_mouse_error_mean,block_2_mouse_error_sd,block_2_rt_mean,block_2_rt_sd,hidden_pa_img_type
 sub_001,cb2,schema_c,24,25.048311161990366,14.02452225282508,1221.0249999811251,218.13481123499557,all_pa
 sub_001,cb2,schema_ic,24,29.448167878031537,12.81172551580184,1244.320833320419,165.21012701727085,all_pa
 sub_001,cb2,schema_l,24,28.699838477629044,17.98479941078174,1240.875000004967,188.85396301840834,all_pa

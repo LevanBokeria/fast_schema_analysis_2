@@ -7,9 +7,10 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 source('./scripts/utils/load_transform_data.R')
+source('./scripts/utils/functions_for_fitting_learning_curves.R')
 
 # Flags
-saveData <- F
+saveData <- T
 
 
 # Start combining data ######################################################
@@ -24,38 +25,76 @@ data_summary <- merge(data_summary,
                              'hidden_pa_img_type'),
                       all.x = T) 
 
-## Calculate predicted y values and merge with the long form data ------------
-learning_and_intercept_each_participants_y_hat_ml <-
+## Calculate predicted y values  ------------
+y_hat_three_param <-
         ml_learning_rate %>%
-        group_by(ptp_trunk,
+        group_by(ptp,
                  condition,
-                 border_dist,
-                 new_pa_status,
-                 accuracy_type) %>% 
-        mutate(y_hat_i_c_ml = list(fit_learning_and_intercept(c(intercept,learning_rate,asymptote),
-                                                              seq(1:8),
-                                                              seq(1:8),
-                                                              'fit',
-                                                              accuracy_type,
-                                                              FALSE)),
-               new_pa_img_row_number_across_sessions = list(seq(1:8))) %>%
-        unnest(c(y_hat_i_c_ml,
-                 new_pa_img_row_number_across_sessions)) %>% 
-        select(c(ptp_trunk,
+                 hidden_pa_img_type) %>% 
+        mutate(y_hat_three_param = list(fit_learning(c(intercept_three_param,
+                                                       learning_rate_three_param,
+                                                       asymptote_three_param + intercept_three_param),
+                                                     seq(1:8),
+                                                     seq(1:8),
+                                                     ret = 'fit',
+                                                     print_output = FALSE,
+                                                     which_model = 'three_param')),
+               hidden_pa_img_row_number_across_blocks = list(seq(1:8))) %>%
+        unnest(c(y_hat_three_param,
+                 hidden_pa_img_row_number_across_blocks)) %>% 
+        select(c(ptp,
                  condition,
-                 border_dist,
-                 new_pa_status,
-                 accuracy_type,
-                 y_hat_i_c_ml,
-                 new_pa_img_row_number_across_sessions)) %>%
+                 hidden_pa_img_type,
+                 y_hat_three_param,
+                 hidden_pa_img_row_number_across_blocks)) %>%
+        ungroup() 
+
+y_hat_two_param <-
+        ml_learning_rate %>%
+        group_by(ptp,
+                 condition,
+                 hidden_pa_img_type) %>% 
+        mutate(y_hat_two_param = list(fit_learning(c(intercept_two_param,
+                                                     learning_rate_two_param),
+                                                   seq(1:8),
+                                                   seq(1:8),
+                                                   ret = 'fit',
+                                                   print_output = FALSE,
+                                                   which_model = 'two_param')),
+               hidden_pa_img_row_number_across_blocks = list(seq(1:8))) %>%
+        unnest(c(y_hat_two_param,
+                 hidden_pa_img_row_number_across_blocks)) %>% 
+        select(c(ptp,
+                 condition,
+                 hidden_pa_img_type,
+                 y_hat_two_param,
+                 hidden_pa_img_row_number_across_blocks)) %>%
         ungroup()
 
-mean_by_rep_all_types_long <- merge(mean_by_rep_all_types_long,
-                                    learning_and_intercept_each_participants_y_hat_ml,
-                                    by = c('ptp_trunk',
+y_hat_both_models <- merge(y_hat_three_param,
+                           y_hat_two_param,
+                           by = c('ptp',
+                                  'condition',
+                                  'hidden_pa_img_type',
+                                  'hidden_pa_img_row_number_across_blocks')) %>%
+        mutate(border_dist_closest = 'all')
+
+# If mean_by_rep already has the predicted data as columns, remove those
+mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+        select(-starts_with('y_hat_'))
+
+## Now merge with predicted data -------------------
+mean_by_rep_long_all_types <- merge(mean_by_rep_long_all_types,
+                                    y_hat_both_models,
+                                    by = c('ptp',
                                            'condition',
-                                           'border_dist',
-                                           'new_pa_status',
-                                           'accuracy_type',
-                                           'new_pa_img_row_number_across_sessions'),
-                                    all = TRUE)
+                                           'hidden_pa_img_type',
+                                           'hidden_pa_img_row_number_across_blocks',
+                                           'border_dist_closest'),
+                                    all.x = TRUE)
+
+# Save the data #################################
+if (saveData){
+        write_csv(mean_by_rep_long_all_types,
+                  file = './results/mean_by_rep_long_all_types.csv')
+}

@@ -18,7 +18,7 @@ function [out_params,fval] = est_learning_rate(ptp_data,params,plotEstimation,wh
         % For optimize both rate and offset
         if strcmp(which_model,'three_parameters')
             
-            y_hat = x(3) * (exp(-x(2) * (trials - 1)) - 1) + x(1);
+            y_hat = x(3) * exp(-x(2) * (trials - 1)) + x(1) - x(3);
             
         elseif strcmp(which_model,'two_parameters')
             

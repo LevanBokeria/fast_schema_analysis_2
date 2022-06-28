@@ -19,6 +19,9 @@ source('./scripts/utils/load_all_libraries.R')
 
 qc_filter <- T
 
+plot_normality <- F
+plot_mouse_clicks <- F
+
 source('./scripts/utils/load_transform_data.R')
 
 qc_table <- import('./results/qc_check_sheets/qc_table.csv')
@@ -33,7 +36,9 @@ if (qc_filter){
         data_summary <- data_summary %>%
                 filter(ptp %in% qc_pass_ptp)
         long_data <- long_data %>%
-                filter(ptp %in% qc_pass_ptp)        
+                filter(ptp %in% qc_pass_ptp) 
+        mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+                filter(ptp %in% qc_pass_ptp)
         
 }
 
@@ -49,15 +54,15 @@ reportBF = function(x, digits){
 ## Block 2
 
 ```{r block-2-normality-checks}
-
-# Density plot
+if (plot_normality){
+       # Density plot
 data_summary %>%
         ggplot(aes(x=block_2_mouse_error_mean,
                    y = ..density..)) +
         geom_histogram() +
         geom_density(lwd = 1,
                      color = 'red') +
-        facet_wrap(~type) +
+        facet_wrap(~hidden_pa_img_type) +
         ggtitle('Block 2, RAW: Histogram and Density')
 
 # QQ Plot
@@ -65,13 +70,16 @@ data_summary %>%
 data_summary %>%
         ggqqplot(x = 'block_2_mouse_error_mean') +
         ggtitle('Block 2, RAW: QQ Plots') +
-        facet_wrap(~type)
+        facet_wrap(~hidden_pa_img_type) 
+}
+
 
 ```
 
 ```{r log-transformations}
-
-# Density plot
+if (plot_normality){
+        
+    # Density plot
 data_summary %>%
         mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
         ggplot(aes(x=block_2_mouse_error_mean_LOG,
@@ -79,7 +87,7 @@ data_summary %>%
         geom_histogram() +
         geom_density(lwd = 1,
                      color = 'red') +
-        facet_wrap(~type) +
+        facet_wrap(~hidden_pa_img_type) +
         ggtitle('Block 2, LOG: Histogram and Density')
 
 # QQ Plot
@@ -88,18 +96,21 @@ data_summary %>%
         mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
         ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
         ggtitle('Block 2, LOG: QQ Plots') +
-        facet_wrap(~type)
+        facet_wrap(~hidden_pa_img_type)
 
 data_summary <- data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean))
+        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean))    
+        
+}
+
 
 ```
 
 # Plot mouse clicks
 
 ```{r mouse-heat-plots, fig.width=15, fig.height=20}
-
-long_data %>%
+if (plot_mouse_clicks){
+      long_data %>%
         filter(block == 2) %>%
         droplevels() %>%
         ggplot(aes(mouse_clientX - left_offset,mouse_clientY - top_offset)) +
@@ -109,7 +120,11 @@ long_data %>%
                    size=2) +
         # geom_density_2d_filled(alpha = 0.3) +
         facet_grid(ptp~condition) +
-        ggtitle('block 2: Mouse click locations relative to PA')
+        ggtitle('block 2: Mouse click locations relative to PA')  
+        
+        
+}
+
 
 ```
 
@@ -117,12 +132,12 @@ long_data %>%
 
 ## All data, each condition
 
-```{r raw-learning-curves-and-fits, fig.width=13, fig.height=20}
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=40}
 
 
 # Plot the fits
 fig_each_ptp <- mean_by_rep_long_all_types %>%
-        filter(hidden_pa_img_type == 'all',
+        filter(hidden_pa_img_type == 'all_pa',
                border_dist_closest == 'all') %>%
         droplevels() %>%        
         ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
@@ -131,6 +146,49 @@ fig_each_ptp <- mean_by_rep_long_all_types %>%
         
         geom_point(alpha=0.5) +
         geom_line(alpha=0.5) +        
+        
+        
+        # Add the y_hat two parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_two_param),
+                  size=1,
+                  color='red',
+                  linetype = 'longdash') +           
+        
+        # Add the y_hat three parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_three_param),
+                  size=1,
+                  color='blue',
+                  linetype = 'twodash') +                   
+        
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'all_pa',
+                ),
+                aes(x=4.5,
+                    y=250,
+                    label = paste('int=',
+                                  as.character(round(intercept_two_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_two_param,2)),
+                                  seq='')),
+                color = 'red') +
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'all_pa',
+                ),
+                aes(x=4.5,
+                    y=200,
+                    label = paste('int=',
+                                  as.character(round(intercept_three_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_three_param,2)),
+                                  seq='')),
+                color = 'blue') +        
+        
         
         facet_grid(ptp~condition) +
         ggtitle(paste('Mouse euclidean distance',sep='')) +

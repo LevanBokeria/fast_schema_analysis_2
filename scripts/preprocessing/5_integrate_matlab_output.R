@@ -17,6 +17,12 @@ saveData <- T
 
 ml_learning_rate <- import('./results/learning_rate_fits_matlab.csv')
 
+# If data summary already has the model fitting columns, remove those
+data_summary <- data_summary %>%
+        select(-c(starts_with('sse_'),
+                  starts_with('asymptote_'),
+                  starts_with('intercept_'),
+                  starts_with('learning_rate_')))
 
 data_summary <- merge(data_summary,
                       ml_learning_rate,
@@ -33,7 +39,7 @@ y_hat_three_param <-
                  hidden_pa_img_type) %>% 
         mutate(y_hat_three_param = list(fit_learning(c(intercept_three_param,
                                                        learning_rate_three_param,
-                                                       asymptote_three_param + intercept_three_param),
+                                                       intercept_three_param - asymptote_three_param),
                                                      seq(1:8),
                                                      seq(1:8),
                                                      ret = 'fit',
@@ -97,4 +103,6 @@ mean_by_rep_long_all_types <- merge(mean_by_rep_long_all_types,
 if (saveData){
         write_csv(mean_by_rep_long_all_types,
                   file = './results/mean_by_rep_long_all_types.csv')
+        
+        write_csv(data_summary,file = './results/data_summary.csv')
 }

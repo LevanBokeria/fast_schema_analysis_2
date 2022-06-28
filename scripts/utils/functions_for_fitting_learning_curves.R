@@ -4,7 +4,7 @@ fit_learning <- function(p,t,y,ret,print_output,which_model){
         if (which_model == 'two_param'){
                 y_hat = p[1] * exp(-p[2] * (t - 1))
         } else if (which_model == 'three_param'){
-                y_hat = p[3] * (exp(-p[2] * (t - 1)) - 1) + p[1]
+                y_hat = p[3] * exp(-p[2] * (t - 1)) + p[1] - p[3]
         }
         
         sse <- sum((y-y_hat)^2)

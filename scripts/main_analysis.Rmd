@@ -21,6 +21,7 @@ qc_filter <- T
 
 plot_normality <- F
 plot_mouse_clicks <- F
+plot_fits_near_far <- F
 
 source('./scripts/utils/load_transform_data.R')
 
@@ -153,14 +154,14 @@ fig_each_ptp <- mean_by_rep_long_all_types %>%
                       y=y_hat_two_param),
                   size=1,
                   color='red',
-                  linetype = 'longdash') +           
+                  linetype = 'twodash') +           
         
         # Add the y_hat three parameters
         geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
                       y=y_hat_three_param),
                   size=1,
                   color='blue',
-                  linetype = 'twodash') +                   
+                  linetype = 'longdash') +                   
         
         geom_text(data=filter(
                 data_summary,
@@ -209,7 +210,7 @@ print(fig_each_ptp)
 
 # Plot the fits
 fig_each_ptp <- mean_by_rep_long_all_types %>%
-        filter(hidden_pa_img_type == 'all',
+        filter(hidden_pa_img_type == 'all_pa',
                border_dist_closest == 'all') %>%
         droplevels() %>%                
         group_by(condition,
@@ -252,39 +253,54 @@ print(fig_each_ptp)
 
 ## Near vs far
 
-```{r landmark-raw-learning-curves-and-fits, fig.width=10, fig.height=12}
-
-# For mouse euclidean distance
-
-fig_each_ptp_lm <- mean_by_rep_long_all_types %>%
-        filter(hidden_pa_img_type %in% c('near','far'),
-               !condition %in% c('random_locations','no_schema'),
-               border_dist_closest == 'all'
-               ) %>%
-        droplevels() %>%
+```{r landmark-raw-learning-curves-and-fits, fig.width=18, fig.height=60}
+if (plot_fits_near_far){
+        # For mouse euclidean distance
         
-        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
-                   y=mouse_error_mean,
-                   group=hidden_pa_img_type,
-                   color=hidden_pa_img_type)) +
-        geom_point(size=1) +
-        geom_line(size=0.5) +
-
-        facet_grid(ptp~condition) +
-        ggtitle('Mouse euclidean distance') +
-        xlab('Image repetition') +
-        ylab('Mouse euclidean distance') +
-        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
-        scale_y_continuous(breaks=seq(0,250,50)) +
-
-        # theme(legend.position = 'top') +
-        geom_vline(xintercept = 4.5, linetype = 'dashed') +
-        # theme(legend.position = '') +
-        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
-
-
-print(fig_each_ptp_lm)
-
+        fig_each_ptp_lm <- mean_by_rep_long_all_types %>%
+                filter(hidden_pa_img_type %in% c('near','far'),
+                       !condition %in% c('random_locations','no_schema'),
+                       border_dist_closest == 'all'
+                       ) %>%
+                droplevels() %>%
+                
+                ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                           y=mouse_error_mean,
+                           group=hidden_pa_img_type,
+                           color=hidden_pa_img_type)) +
+                geom_point(size=2) +
+                geom_line(size=0.5) +
+        
+                # Add the y_hat learning and intercept
+                geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                              y=y_hat_two_param),
+                          size=0.8,
+                          # color='blue',
+                          linetype = 'twodash') +
+                
+                # Add the y_hat learning and intercept
+                geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                              y=y_hat_three_param),
+                          size=0.8,
+                          # color='blue',
+                          linetype = 'longdash') +
+                
+                
+                facet_grid(ptp~condition) +
+                ggtitle('Mouse euclidean distance') +
+                xlab('Image repetition') +
+                ylab('Mouse euclidean distance') +
+                scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+                scale_y_continuous(breaks=seq(0,250,50)) +
+        
+                # theme(legend.position = 'top') +
+                geom_vline(xintercept = 4.5, linetype = 'dashed') +
+                # theme(legend.position = '') +
+                theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
+        
+        
+        print(fig_each_ptp_lm)
+}
 
 ```
 
@@ -430,6 +446,163 @@ print(fig)
 
 
 ```
+
+# Learning parameter estimate plots:
+
+```{r plot-learning-parameter-estimates-two-param, fig.width=14, fig.height=5}
+
+# Two parameter model learning rates
+data_summary %>%
+        # filter(hidden_pa_img_type == 'all_pa') %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_two_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Two parameter model: Learning rates')
+
+# Two parameter model, intercepts
+data_summary %>%
+        # filter(hidden_pa_img_type == 'all_pa') %>%
+        ggplot(aes(x=condition,
+                   y=intercept_two_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Two parameter model: intercepts')
+
+# Near - Far difference in learning rates
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    values_from = learning_rate_two_param,
+                    names_from = hidden_pa_img_type) %>% 
+        mutate(far_minus_near = far - near) %>%
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        ggtitle('Two parameter model: Far-Near learning rate')
+
+```
+
+```{r plot-learning-parameter-estimates-three-param, fig.width=14, fig.height=5}
+
+# Three parameter model learning rates
+data_summary %>%
+        ggplot(aes(x=condition,
+                   y=learning_rate_three_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Three parameter model: Learning rates')
+
+# Three parameter model, intercepts
+data_summary %>%
+        ggplot(aes(x=condition,
+                   y=intercept_three_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Three parameter model: intercepts')
+
+# Three parameter model, asymptote
+data_summary %>%
+        ggplot(aes(x=condition,
+                   y=asymptote_three_param,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Three parameter model: asymptotes')
+
+# Near - Far difference in learning rates
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    values_from = learning_rate_three_param,
+                    names_from = hidden_pa_img_type) %>% 
+        mutate(far_minus_near = far - near) %>%
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.3) +
+        geom_boxplot(outlier.shape = '',
+                     width = 0.2,
+                     fatten = 3) +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group = ptp),
+                  alpha = 0.2) +
+        stat_summary(fun = 'mean',
+                     color = 'red',
+                     size = 1) +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        ggtitle('Three parameter model: Far-Near learning rate')
+
+```
+
+
+
 
 # Block 2 mean performance:
 

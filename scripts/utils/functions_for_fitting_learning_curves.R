@@ -23,3 +23,9 @@ fit_learning <- function(p,t,y,ret,print_output,which_model){
                 return(sse)
         } 
 }
+
+get_aic <- function(sse,n_params){
+        
+        aic_val <- 2*n_params + 2*sse
+        
+}

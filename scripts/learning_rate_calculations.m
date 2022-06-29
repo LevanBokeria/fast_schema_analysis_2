@@ -45,7 +45,7 @@ for iPtp = 1:n_ptp
     iPtp
     
     for iCond = 1:length(all_conditions)
-        iCond
+        all_conditions{iCond}
         
         for iType = 1:length(all_hidden_pa_types)
             iType

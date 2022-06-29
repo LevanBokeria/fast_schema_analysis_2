@@ -41,8 +41,7 @@ mean_by_rep_long_all_pa <- long_data %>%
 ### Near/Far ================================================
 
 mean_by_rep_long_near_far <- long_data %>%
-        filter(!condition %in% c('random_loc','no_schema'),
-               hidden_pa_img_type %in% c('far','near')) %>%
+        filter(hidden_pa_img_type %in% c('far','near')) %>%
         droplevels() %>%
         group_by(ptp,
                  counterbalancing,

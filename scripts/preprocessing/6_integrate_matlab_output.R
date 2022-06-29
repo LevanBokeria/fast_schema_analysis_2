@@ -12,7 +12,6 @@ source('./scripts/utils/functions_for_fitting_learning_curves.R')
 # Flags
 saveData <- T
 
-
 # Start combining data ######################################################
 
 ml_learning_rate <- import('./results/learning_rate_fits_matlab.csv')
@@ -30,6 +29,13 @@ data_summary <- merge(data_summary,
                              'condition',
                              'hidden_pa_img_type'),
                       all.x = T) 
+
+## Calculate AIC ----------------------------
+data_summary %>%
+        mutate(aic_two_param = get_aic(sse_two_param,
+                                       2)) %>% View()
+
+
 
 ## Calculate predicted y values  ------------
 y_hat_three_param <-

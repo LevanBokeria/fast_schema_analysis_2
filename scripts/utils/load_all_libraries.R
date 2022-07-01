@@ -27,4 +27,5 @@ pacman::p_load(pacman,
                BayesFactor,
                ggpubr,
                forestmangr,
-               broom)
+               broom,
+               nlme)

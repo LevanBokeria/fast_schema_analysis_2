@@ -32,43 +32,72 @@ exdata %>% nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_bl
 
 
 # Try on grouped data
+# mean_by_rep_long_all_types %>%
+#         filter(border_dist_closest == 'all',
+#                hidden_pa_img_type == 'all_pa') %>%
+#         droplevels() %>%
+#         group_by(ptp,
+#                  condition) %>%
+#         summarise(
+#                 full_model_two_param = list(nls(
+#                         mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                         data = cur_data(),
+#                         start = list(c = 0.1,
+#                                      a = 200),
+#                         control = list(maxiter = 200))),
+#                 full_model_three_param = list(nls(
+#                         mouse_error_mean ~ b * exp(-c*(hidden_pa_img_row_number_across_blocks-1)) + a - b,
+#                         data = cur_data(),
+#                         start = list(b = 90,
+#                                      c = 0.1,
+#                                      a = 100),
+#                         control = list(maxiter = 200)))) %>%
+#         ungroup()
+#         rowwise() %>%
+#         mutate(a_two_param = coef(full_model_two_param)['a'],
+#                c_two_param = coef(full_model_two_param)['c'],
+#                loglik_two_param = as.vector(logLik(full_model_two_param))) %>% View()
+# 
+# 
+# a %>%
+#         mutate(cf = coefficients(full_model)['a']) %>% View()
+# 
+# mean_by_rep_long_all_types %>%
+#         filter(border_dist_closest == 'all',
+#                hidden_pa_img_type == 'all_pa') %>%
+#         droplevels() %>%
+#         group_by(ptp,
+#                  condition) %>%
+#         summarise(
+#                 loglik_two_param = as.vector(logLik(nls(
+#                 mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                 data = cur_data(),
+#                 start = list(c = 0.1,
+#                              a = 200),
+#                 control = list(maxiter = 200)))),
+#                a = coefficients(nls(
+#                        mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                        data = cur_data(),
+#                        start = list(c = 0.1,
+#                                     a = 200),
+#                        control = list(maxiter = 200)))['a'],
+#                c = coefficients(nls(
+#                        mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                        data = cur_data(),
+#                        start = list(c = 0.1,
+#                                     a = 200),
+#                        control = list(maxiter = 200)))['c'],
+#                mdl = nls(
+#                        mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                        data = cur_data(),
+#                        start = list(c = 0.1,
+#                                     a = 200),
+#                        control = list(maxiter = 200))$convInfo$isConv
+#                ) %>%
+#         ungroup() %>% View()
 
-mean_by_rep_long_all_types %>%
-        filter(border_dist_closest == 'all',
-               hidden_pa_img_type == 'all_pa') %>%
-        droplevels() %>%
-        group_by(ptp,
-                 condition) %>%
-        summarise(
-                loglik_two_param = as.vector(logLik(nls(
-                mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-                data = cur_data(),
-                start = list(c = 0.1,
-                             a = 200),
-                control = list(maxiter = 200)))),
-               a = coefficients(nls(
-                       mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-                       data = cur_data(),
-                       start = list(c = 0.1,
-                                    a = 200),
-                       control = list(maxiter = 200)))['a'],
-               c = coefficients(nls(
-                       mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-                       data = cur_data(),
-                       start = list(c = 0.1,
-                                    a = 200),
-                       control = list(maxiter = 200)))['c'],
-               mdl = nls(
-                       mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-                       data = cur_data(),
-                       start = list(c = 0.1,
-                                    a = 200),
-                       control = list(maxiter = 200))$convInfo$isConv
-               ) %>%
-        ungroup() %>% View()
 
-
-for (iptp in c('sub_001','sub_011')){ 
+for (iptp in c('sub_005')){ 
         #unique(mean_by_rep_long_all_types$ptp)){
         
         for (icond in unique(mean_by_rep_long_all_types$condition)){
@@ -88,6 +117,16 @@ for (iptp in c('sub_001','sub_011')){
                            start = list(c = 0.1,
                                         a = 200),
                            control = list(maxiter = 200))
+                
+                mdl2 <- nls(
+                        mouse_error_mean ~ b * exp(-c*(hidden_pa_img_row_number_across_blocks-1)) + a - b,
+                        data = curr_data,
+                        start = list(b = 150,
+                                     c = 0.1,
+                                     a = 200),
+                        control = list(maxiter = 200,
+                                       minFactor = 0.00009))
+                
                 
                 print(logLik(mdl))
 

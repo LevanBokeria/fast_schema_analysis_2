@@ -3,32 +3,50 @@ rm(list=ls())
 source('./scripts/utils/load_all_libraries.R')
 
 # Load
+qc_filter <- T
 
-mean_by_rep_long_all_types <- import('./results/mean_by_rep_long_all_types.csv')
+source('./scripts/utils/load_transform_data.R')
 
+qc_table <- import('./results/qc_check_sheets/qc_table.csv')
+
+if (qc_filter){
+        
+        qc_pass_ptp <- qc_table %>%
+                filter(!qc_fail_overall) %>%
+                select(ptp) %>% .[[1]]
+        
+        
+        data_summary <- data_summary %>%
+                filter(ptp %in% qc_pass_ptp)
+        long_data <- long_data %>%
+                filter(ptp %in% qc_pass_ptp) 
+        mean_by_rep_long_all_types <- mean_by_rep_long_all_types %>%
+                filter(ptp %in% qc_pass_ptp)
+        
+}
 
 # Get one part data
-exdata <- 
-mean_by_rep_long_all_types %>%
-        filter(border_dist_closest == 'all',
-               hidden_pa_img_type == 'all_pa',
-               ptp == 'sub_001',
-               condition == 'schema_c') %>%
-        select(ptp,
-               hidden_pa_img_row_number_across_blocks,
-               mouse_error_mean)
-
-
-mdl <- nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-    data = exdata,
-    start = list(c = 0.1,
-                 a = 200))
-
-
-exdata %>% nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
-               data = .,
-               start = list(c = 0.1,
-                            a = 200))
+# exdata <- 
+# mean_by_rep_long_all_types %>%
+#         filter(border_dist_closest == 'all',
+#                hidden_pa_img_type == 'all_pa',
+#                ptp == 'sub_001',
+#                condition == 'schema_c') %>%
+#         select(ptp,
+#                hidden_pa_img_row_number_across_blocks,
+#                mouse_error_mean)
+# 
+# 
+# mdl <- nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#     data = exdata,
+#     start = list(c = 0.1,
+#                  a = 200))
+# 
+# 
+# exdata %>% nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_blocks-1)),
+#                data = .,
+#                start = list(c = 0.1,
+#                             a = 200))
 
 
 # Try on grouped data
@@ -97,8 +115,7 @@ exdata %>% nls(mouse_error_mean ~ a * exp(-c*(hidden_pa_img_row_number_across_bl
 #         ungroup() %>% View()
 
 
-for (iptp in c('sub_005')){ 
-        #unique(mean_by_rep_long_all_types$ptp)){
+for (iptp in unique(mean_by_rep_long_all_types$ptp)){
         
         for (icond in unique(mean_by_rep_long_all_types$condition)){
                 
@@ -116,16 +133,17 @@ for (iptp in c('sub_005')){
                            data = curr_data,
                            start = list(c = 0.1,
                                         a = 200),
-                           control = list(maxiter = 200))
+                           control = list(maxiter = 2000))
                 
                 mdl2 <- nls(
                         mouse_error_mean ~ b * exp(-c*(hidden_pa_img_row_number_across_blocks-1)) + a - b,
                         data = curr_data,
-                        start = list(b = 150,
-                                     c = 0.1,
+                        start = list(b = 190,
+                                     c = 1,
                                      a = 200),
-                        control = list(maxiter = 200,
-                                       minFactor = 0.00009))
+                        control = list(maxiter = 20000,
+                                       minFactor = 1e-15,
+                                       warnOnly = F))
                 
                 
                 print(logLik(mdl))

@@ -154,7 +154,7 @@ good_ptp <- qc_table %>%
 
 good_ptp_data <- data_summary %>%
         filter(ptp %in% good_ptp,
-               type == 'all_pa') %>%
+               hidden_pa_img_type == 'all_pa') %>%
         droplevels() 
 
 # Get the across condition accuracy for block 2

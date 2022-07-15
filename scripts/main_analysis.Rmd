@@ -872,6 +872,30 @@ bf_near_l_vs_c <- reportBF(ttestBF(
 
 ```
 
+```{r bf-analysis-near-schema-l-vs-schema-c-LOG}
+
+data_for_bf_near_l_vs_c_LOG <- data_summary %>%
+        filter(hidden_pa_img_type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
+        select(schema_l_minus_schema_c) %>% .[[1]]
+
+
+null_interval <- c(0,Inf)
+
+bf_near_l_vs_c_LOG <- reportBF(ttestBF(
+        data_for_bf_near_l_vs_c_LOG,
+        nullInterval = null_interval
+)[1],4)
+
+```
+
 # Far PAs: schema-l vs schema-c
 
 ## Plot:

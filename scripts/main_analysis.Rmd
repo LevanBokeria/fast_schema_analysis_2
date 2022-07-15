@@ -82,7 +82,6 @@ if (plot_normality){
         
     # Density plot
 data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
         ggplot(aes(x=block_2_mouse_error_mean_LOG,
                    y = ..density..)) +
         geom_histogram() +
@@ -94,16 +93,9 @@ data_summary %>%
 # QQ Plot
 
 data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean)) %>%
         ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
         ggtitle('Block 2, LOG: QQ Plots') +
         facet_wrap(~hidden_pa_img_type)
-
-data_summary <- data_summary %>%
-        mutate(block_2_mouse_error_mean_LOG = log(block_2_mouse_error_mean))    
-        
-}
-
 
 ```
 
@@ -795,7 +787,7 @@ data_summary %>%
                                 hidden_pa_img_type),
                     names_from = condition,
                     values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
+        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% View() 
         
         ggplot(aes(x='difference',
                    y=schema_l_minus_schema_c)) +

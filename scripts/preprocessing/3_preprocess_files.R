@@ -12,8 +12,6 @@ source('./scripts/utils/load_all_libraries.R')
 
 saveDataCSV <- T
 
-
-
 # Start reading the files ##################
 
 # Get a list of all files in the folder

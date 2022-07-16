@@ -851,3 +851,115 @@ sub_061,schema_c,39524.90000000596,"bath, shoe, door handle, card, wing mirror, 
 sub_061,schema_ic,33826,"sink, cucumber, bench, lights, beer, tomatoes","ATM, Christmas tree, cow, drums, lightbulb, chair"
 sub_061,schema_l,34307.79999999702,"present, pumpkin, kiwi, phone, rose, shovel","pitta, flask, squirrel, wheel, cloud, wasp"
 sub_061,random_loc,36581.5,"trolley, tree, football table, bus, ice, ladybird","microwave, rubix cube, treadmill, pool table, beer, hose"
+sub_062,no_schema,56738.89999999991,"pasta , shower head, table , onion , steering wheel, drawers ",NA
+sub_062,schema_c,82009.29999999981,"bath, sandal , door handle , card , wing mirror, curtain
+ ","chair, salt , bus , map , tv , doughnut "
+sub_062,schema_ic,57621.39999999991,"sink, cucumber , table , lights , beer , tomato","ATM , tree , cow , drum , light , chair"
+sub_062,schema_l,116814.3999999999,"gift , pumpkin , kiwi , phone , flower , shovel","crisp , mug , squirrel , wheel , cloud , bee"
+sub_062,random_loc,52255.700000000186,"trolley , tree , table football , coach , ice , ladybug
+","microwave , rubix , treadmill , pool table , bottle , hose"
+sub_063,random_loc,91531,"cup cake, escalators, water tap, bed, baseball, socket.","pasta, shower head, round table, onion, steering wheel, shelf. "
+sub_063,no_schema,101089.89999997616,"foldable chair, salt cellar, American school bus, world map, Computer monitor, ring donut. ",NA
+sub_063,schema_c,143334.39999997616,"bathroom sink, cucumber, picnic table, traffic light, beer glass, tomatoes.","cash point, Christmas tree, cow, drums, energy light bulb, wooden high chair."
+sub_063,schema_ic,98923.30000001192,"present, pumpkin, fig, pay phone, red rose, shovel","Dorito, portable coffee cup, squirrel, bike wheel, cloud, wasp."
+sub_063,schema_l,73971.10000002384,"shopping trolley, tree, football table, coach, ice cube, lady bird. ","microwave, rubric cube, treadmill, snooker table, beer bottle, hose pipe"
+sub_064,schema_l,113514.5,"Flakes, Shower head, Table, Onion, Wheel, Cupboard",I do not know yet
+sub_064,random_loc,92869.39999961853,"chair, salt case, bus, map, ","tv, donut"
+sub_064,no_schema,72428.7999997139,"atm booth, chrish mas tree, cow, drum, light, chair",NA
+sub_064,schema_c,69875.40000009537,"gift, pumkin, kiwi, telephone, rose, shovel","bread, mug, squirel, wheel. cloud. bee"
+sub_064,schema_ic,46400.40000009537,"trolly, tree, football board, bus, plastic, beetle","microwave oven, cube, treadmill, poll board, bottle, pipe"
+sub_065,schema_l,113992.09999999963,"cupcake, escalator, sink, bed, basketball, plug socket","pasta, shower head, table, onion, steering wheel, bookcase"
+sub_065,random_loc,81765.80000000075,"bash, flipflop, door handle, playing card, car mirror, curtain ","folding chair, salt shaker, bus, map, TV, doughnut"
+sub_065,no_schema,53974.29999999702,"ATM, christmas tree, cow, drum kit, lightblub, chair",NA
+sub_065,schema_c,68022.89999999851,"present, pumpkin, kiwi fruit, phone, rose, shovel","chip, steel mug, squirrel, bike tire, cloud, wasp"
+sub_065,schema_ic,76825.60000000149,"shopping cart, tree, fossball table, coach, ice cube, lady bug","mircowave, rubiks cube, treadmill, pool table, beer bottle, hose "
+sub_066,no_schema,38764,"Pasta, Shower Head, Table, Red Onion, Steering Wheel, Book Shelf.",NA
+sub_066,schema_c,66009.60000002384,"Bathtub, Flip-Flop, Door Handle, Ace of Diamonds Card, Wing Mirror, Curtain.","Chair, Salt Shaker, School Bus, World Map, Television, Doughnut."
+sub_066,schema_ic,59198.30000001192,"Sink,  Cucumber, Picknic Table, Traffic Lights, Beer, Tomatoes","ATM, Christmas Tree, Cow, Drums, Lightbulb, Chair."
+sub_066,schema_l,69640.89999997616,"Present, Pumpkin, Kiwi, Public Telephone, Pink Rose,  Shovel.","Tortilla Crisp, Flask, Squirrel, Bike Wheel, Cloud, Wasp."
+sub_066,random_loc,51288.30000001192,"Shopping Trolly, Tree, Table Football, Coach, Ice Cube, Lady Bug.","Microwave, Rubix Cube, Treadmill, Pool Table, Beer Bottle, Hosepipe."
+sub_067,random_loc,78669.70000004768,cupcake esculator box bed basketball socket plug,pasta shower head table onion steering wheel bookshelf
+sub_067,no_schema,36681.89999985695,chair salt bus map monitor doughnut,NA
+sub_067,schema_c,103845.60000014305,bath sinkcucumber park bench traffic light bear glass tomato,cash machine christmas tree cow drumlight bulb chair
+sub_067,schema_ic,78079.20000004768,present pumpkin kiwi payphone rose spade,tortilla thermos squirrel bike wheel cloud bee
+sub_067,schema_l,50100,trolley tree foosball bus stone lady bird,microwave rubix cube treadmill pool table bottle hose
+sub_068,schema_c,31021.59999999404,"Cupcake, escalator, sink, bed, ball, socket","Macaroni, showerhead, table, onion, wheel, shelf"
+sub_068,schema_ic,23088.5,"bath, sandal, doorknob, card, mirror, curtain","chair, salt, bus, map, screen, doughnut"
+sub_068,schema_l,25828.20000000298,"sink, cucumber, picnic table, traffic lights, beer, tomatoes","atm, christmas tree, cow, drums, bulb, chair"
+sub_068,random_loc,24920.29999999702,"present, pumpkin, kiwi, phone, rose, shovel","crisp, mug, squirrel, tyre, cloud, bee"
+sub_068,no_schema,13332.69999999553,"microwave, rubix cube, treadmill, pool table, bottle, hose",NA
+sub_069,no_schema,37199.699999999255,macaroni shower table onion wheel shelf,NA
+sub_069,schema_c,64229.099999997765,bath flip flop handle card mirror curtain,chair shaker bus map tv donut
+sub_069,schema_ic,32461.699999999255,sink cucumber table lights pint tomatos,atm tree cow drum bulb chair
+sub_069,schema_l,38916.60000000149,gift pumpkin kiwi phone flower spade,tortilla flask squirrel wheel cloud bee
+sub_069,random_loc,39220.599999997765,trolley tree foosball bus stone bug,microwave rubix threadmill pool bottle hose
+sub_070,schema_ic,70697.5,"Cupcake, Escalator, Water Fountain, Bed, Basketball, Socket","Pasta, Showerhead, Table, Onion, Steering Wheel, Bookcase"
+sub_070,schema_l,53699.20000000298,"Bath
+Flip flop
+Door handle
+Playing card
+Wing mirror
+Curtain","Chair
+Salt Shaker
+School Bus
+World Map
+TV
+Donut"
+sub_070,random_loc,182352.80000000075,"Sink
+Cucumber
+Picnic Table
+Traffic lights
+Beer
+Tomatoes","ATM
+Christmas Tree
+Cow
+Drum Kit
+Lightbulb
+Chair"
+sub_070,no_schema,24613.89999999851,"Crisp
+Flask
+Squirrel
+Wheel
+Cloud
+Bee",NA
+sub_070,schema_c,47811.39999999851,"Trolley
+Tree
+Table Football
+Coach
+Ice cube
+Ladybug","Microwave
+Rubix Cube
+Treadmill
+Pool Table
+Beer
+Hose"
+sub_071,random_loc,78955.29999999981,cupcake escalator fountain bed basketball outlet,macaroni showerhead table onion wheel cupboard
+sub_071,no_schema,29207.10000000056,chair salt bus map monitor donut ,NA
+sub_071,schema_c,42907.799999999814,sink cucumber bench lights pint tomato,atm tree cow drums bulb chair
+sub_071,schema_ic,43768.200000000186,present pumpkin kiwi phone rose shovel,tortilla mug squirrel wheel cloud wasp
+sub_071,schema_l,73416.39999999944,trolley tree table football coach ice ladybird,microwave rubiks cube treadmill pool table bottle hose
+sub_072,schema_ic,64969.09999999963,"Cake, escalator, sink, bed, basketball, plug socket","Pasta, showerhead, table, red onion, steering wheel, bookcase"
+sub_072,schema_l,35960,"bath, flip flop, door handle, playing card, wing mirror, curtain","chair, salt shaker, school bus, world map, television, donut"
+sub_072,random_loc,68781.1000000001,"sink, cucumber, wooden bench table, traffic lights, pint of cola, tomatoes","ATM, Christmas tree, cow, drumset, lightbulb, rocking chair"
+sub_072,no_schema,33663,"tortilla chip, travel mug, squirrel, bicycle wheel, cloud, wasp",NA
+sub_072,schema_c,32916.10000000056,"shopping trolley, tree, foosball table, coach, ice cube, ladybird","microwave, rubik's cube, tradmill, pool table, glass bottle, hose"
+sub_073,no_schema,24761.5,"Pasta, Showerhead, Table, Onion, wheel, shelves",NA
+sub_073,schema_c,45154.300000071526,"Bath, sandal, doorknob, card, wingmirror, table","Chair, salt, bus, map, TV, doughnut"
+sub_073,schema_ic,33337.89999997616,"Sink, Cucumber, Table, Lights, Beer, Tomato","ATM, tree, cow, drums, bulb, chair"
+sub_073,schema_l,49965,"Gift, pumpkin, kiwi, phone, rose, spade","Crisp, Thermos, possum, wheel, cloud, bee"
+sub_073,random_loc,38862.199999928474,"trolley, tree, foosball, bus, rock, bug","microwave, cube, treadmill, pool table, beer bottle, hose"
+sub_074,random_loc,22085,CUPCAKE,PASTA
+sub_074,no_schema,18513.59999999404,CHAIR,NA
+sub_074,schema_c,9067.09999999404,SINK,COW
+sub_074,schema_ic,15125.700000017881,PRESENT,BEE
+sub_074,schema_l,11094.800000011921,TROLLEY,MICROWAVE
+sub_075,schema_l,73940.20000000298,"Cupcake, escalator, suitcase, bed, basketball, outlet","Macaroni, shower, table, onion, steering wheel, bookcase"
+sub_075,random_loc,41351,"Bath, flipflop, door handle, playing card, wing mirror, curtain","Chair, salt shaker, school bus, world map, TV, doughnut"
+sub_075,no_schema,30264.89999999851,"ATM, Christmas tree, cow, drums, lightbulb, chair",NA
+sub_075,schema_c,50618.300000000745,"Present, jack-o-lantern, kiwi, pay phone, rose, spade","nacho chip, travel mug, squirrel, wheel, cloud, bee"
+sub_075,schema_ic,36509.89999999851,"trolley, tree, table football, coach, rock, ladybird","microwave, Rubix cube, treadmill, pool table, beer bottle, hose"
+sub_076,schema_ic,220675.20000000298,"muffin, escalators, music player, bed, basketball, plug socket","mac n cheese, shower, table, onion, car wheel, cabinet"
+sub_076,schema_l,311183.59999999776,"bath, slipper, door handle, playing card, car window, curtains","chair, salt, bus, map, tv, doughnut"
+sub_076,random_loc,258169.69999999925,"sink, cucumber, bench, traffic light, drink, tomatoes","atm, Christmas tree, cow, drums, light bulb, chair"
+sub_076,no_schema,67245.39999999851,"crisp, mug, squirrel, bicycle wheel, cloud, bee",NA
+sub_076,schema_c,202181,"trolly, tree, football table, coach, rock ladybird","microwave, Rubix cube, exercise machine, game table, bottle, na"

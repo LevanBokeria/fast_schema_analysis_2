@@ -17,7 +17,7 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 
-qc_filter <- T
+qc_filter <- F
 
 plot_normality <- T
 plot_mouse_clicks <- F
@@ -127,74 +127,74 @@ if (plot_mouse_clicks){
 
 ## All data, each condition
 
-```{r raw-learning-curves-and-fits, fig.width=13, fig.height=40}
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=60}
 
 
-# # Plot the fits
-# fig_each_ptp <- mean_by_rep_long_all_types %>%
-#         filter(hidden_pa_img_type == 'all_pa',
-#                border_dist_closest == 'all') %>%
-#         droplevels() %>%        
-#         ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
-#                    y=mouse_error_mean)) +
-#         geom_vline(xintercept = 4.5, linetype = 'dashed') +
-#         
-#         geom_point(alpha=0.5) +
-#         geom_line(alpha=0.5) +        
-#         
-#         
-#         # Add the y_hat two parameters
-#         geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
-#                       y=y_hat_two_param),
-#                   size=1,
-#                   color='red',
-#                   linetype = 'twodash') +           
-#         
-#         # Add the y_hat three parameters
-#         geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
-#                       y=y_hat_three_param),
-#                   size=1,
-#                   color='blue',
-#                   linetype = 'longdash') +                   
-#         
-#         geom_text(data=filter(
-#                 data_summary,
-#                 hidden_pa_img_type == 'all_pa',
-#                 ),
-#                 aes(x=4.5,
-#                     y=250,
-#                     label = paste('int=',
-#                                   as.character(round(intercept_two_param,2)),
-#                                   ' ',
-#                                   'rate=',
-#                                   as.character(round(learning_rate_two_param,2)),
-#                                   seq='')),
-#                 color = 'red') +
-#         geom_text(data=filter(
-#                 data_summary,
-#                 hidden_pa_img_type == 'all_pa',
-#                 ),
-#                 aes(x=4.5,
-#                     y=200,
-#                     label = paste('int=',
-#                                   as.character(round(intercept_three_param,2)),
-#                                   ' ',
-#                                   'rate=',
-#                                   as.character(round(learning_rate_three_param,2)),
-#                                   seq='')),
-#                 color = 'blue') +        
-#         
-#         
-#         facet_grid(ptp~condition) +
-#         ggtitle(paste('Mouse euclidean distance',sep='')) +
-#         xlab('Image repetition') +
-#         ylab('Mouse euclidean distance ') +
-#         scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
-#         scale_y_continuous(breaks=seq(0,250,50)) +
-#         theme(legend.position = '') +
-#         theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-# 
-# print(fig_each_ptp)
+# Plot the fits
+fig_each_ptp <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type == 'all_pa',
+               border_dist_closest == 'all') %>%
+        droplevels() %>%
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean)) +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+
+        geom_point(alpha=0.5) +
+        geom_line(alpha=0.5) +
+
+
+        # # Add the y_hat two parameters
+        # geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+        #               y=y_hat_two_param),
+        #           size=1,
+        #           color='red',
+        #           linetype = 'twodash') +
+        # 
+        # # Add the y_hat three parameters
+        # geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+        #               y=y_hat_three_param),
+        #           size=1,
+        #           color='blue',
+        #           linetype = 'longdash') +
+        # 
+        # geom_text(data=filter(
+        #         data_summary,
+        #         hidden_pa_img_type == 'all_pa',
+        #         ),
+        #         aes(x=4.5,
+        #             y=250,
+        #             label = paste('int=',
+        #                           as.character(round(intercept_two_param,2)),
+        #                           ' ',
+        #                           'rate=',
+        #                           as.character(round(learning_rate_two_param,2)),
+        #                           seq='')),
+        #         color = 'red') +
+        # geom_text(data=filter(
+        #         data_summary,
+        #         hidden_pa_img_type == 'all_pa',
+        #         ),
+        #         aes(x=4.5,
+        #             y=200,
+        #             label = paste('int=',
+        #                           as.character(round(intercept_three_param,2)),
+        #                           ' ',
+        #                           'rate=',
+        #                           as.character(round(learning_rate_three_param,2)),
+        #                           seq='')),
+        #         color = 'blue') +
+
+
+        facet_grid(ptp~condition) +
+        ggtitle(paste('Mouse euclidean distance',sep='')) +
+        xlab('Image repetition') +
+        ylab('Mouse euclidean distance ') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,250,50)) +
+        theme(legend.position = '') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+print(fig_each_ptp)
 
 ```
 

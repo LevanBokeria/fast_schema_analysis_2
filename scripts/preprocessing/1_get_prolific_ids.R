@@ -8,7 +8,7 @@
 # 2. Run this code.
 # 3. Manually copy to prolific IDs into the prol_id_to_rand_id.csv file, and 
 # assign new random IDs.
-# 4. Run 2_save_individual_files.R code.
+# 4. Move to the next step in the preprocessing pipeline. That should be anonimizing the data.
 
 
 # Global setup ###########################
@@ -32,35 +32,22 @@ for (iFile in incoming_files){
         my_data <- read_file(paste0('./data/incoming_data/jatos_gui_downloads/',iFile))
         
         # Find the data submission module
-        start_loc <- str_locate_all(my_data, 'data_submission_start---')[[1]]
-        end_loc   <- str_locate_all(my_data, '---data_submission_end]')[[1]]
+        start_loc <- str_locate_all(my_data, 'get_pid_comp_start---')[[1]]
+        end_loc   <- str_locate_all(my_data, '---get_pid_comp_end]')[[1]]
         
-        # If no data submission module, skip
-        if (is.na(start_loc)){
+        for (iPtp in seq(nrow(start_loc))){
                 
-                print(print0('No data submission module. Skipping file',
-                             iFile))
-                next
+                json_content <- substr(my_data,start_loc[iPtp,2]+1,end_loc[iPtp,1]-1)
                 
-        } else {
+                json_decoded <- fromJSON(json_content)
                 
+                print(json_decoded$prolific_ID)  
                 
-                for (iPtp in seq(nrow(start_loc))){
-                        
-                        json_content <- substr(my_data,start_loc[iPtp,2]+1,end_loc[iPtp,1]-1)
-                        
-                        json_decoded <- fromJSON(json_content)
-                        
-                        print(json_decoded$prolific_ID)  
-                        
-                        prol_ids <- append(prol_ids,json_decoded$prolific_ID)      
-                        
-                        
-                }
-          
+                prol_ids <- append(prol_ids,json_decoded$prolific_ID)      
+                
                 
         }
-
+        
 }
 
 # Now here, save these as CSV

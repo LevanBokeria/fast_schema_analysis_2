@@ -17,7 +17,7 @@ rm(list=ls())
 
 source('./scripts/utils/load_all_libraries.R')
 
-qc_filter <- F
+qc_filter <- T
 
 plot_normality <- T
 plot_mouse_clicks <- F
@@ -789,7 +789,7 @@ data_summary %>%
                                 hidden_pa_img_type),
                     names_from = condition,
                     values_from = block_2_mouse_error_mean) %>% 
-        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% View() 
+        mutate(schema_l_minus_schema_c = schema_l - schema_c) %>% 
         
         ggplot(aes(x='difference',
                    y=schema_l_minus_schema_c)) +

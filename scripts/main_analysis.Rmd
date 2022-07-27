@@ -253,6 +253,9 @@ bf_l_vs_c <- reportBF(ttestBF(
         nullInterval = null_interval
 )[1],4)
 
+# Just get the effect size:
+es_l_vs_c <- mean(data_for_bf_l_vs_c) / sd(data_for_bf_l_vs_c)
+
 ```
 
 

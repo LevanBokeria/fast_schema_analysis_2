@@ -93,7 +93,8 @@ data_summary_all_pas <- long_data %>%
                   rep_1_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 1],na.rm=T),
                   rep_2_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 2],na.rm=T)) %>%
         ungroup() %>%
-        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean)
+        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean,
+               hidden_pa_img_type = 'all_pa')
 
 ### Combine ===============================
 data_summary_near_far_pas <- long_data %>%
@@ -114,8 +115,7 @@ data_summary_near_far_pas <- long_data %>%
                   rep_1_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 1],na.rm=T),
                   rep_2_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 2],na.rm=T)) %>%
         ungroup() %>%
-        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean,
-               hidden_pa_img_type = 'all_pa')
+        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean)
 
 ### Combine =============================
 data_summary <- NULL

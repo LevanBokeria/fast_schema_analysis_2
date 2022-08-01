@@ -9,7 +9,7 @@ warning('off','MATLAB:rankDeficientMatrix')
 warning('off','stats:nlinfit:IllConditionedJacobian')
 warning('off','stats:nlinfit:IllConditionedJacobian')
 
-saveData = 1;
+saveData = 0;
 qc_filter = 0;
 
 %% Load and prepare the dataset
@@ -56,7 +56,7 @@ for iPtp = 1:n_ptp
     iPtp
     
     for iCond = 1:length(all_conditions)
-%         all_conditions{iCond}
+        all_conditions{iCond}
         
         for iType = 1:length(all_hidden_pa_types)
 %             iType

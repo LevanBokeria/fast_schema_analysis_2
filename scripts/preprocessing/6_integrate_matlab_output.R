@@ -30,22 +30,16 @@ data_summary <- merge(data_summary,
                              'hidden_pa_img_type'),
                       all.x = T) 
 
-## Calculate AIC ----------------------------
-data_summary %>%
-        mutate(aic_two_param = get_aic(sse_two_param,
-                                       2)) %>% View()
-
-
-
 ## Calculate predicted y values  ------------
 y_hat_three_param <-
         ml_learning_rate %>%
+        mutate(p1 = intercept_three_param,
+               p2 = learning_rate_three_param,
+               p3 = intercept_three_param - asymptote_three_param) %>%
         group_by(ptp,
                  condition,
                  hidden_pa_img_type) %>% 
-        mutate(y_hat_three_param = list(fit_learning(c(intercept_three_param,
-                                                       learning_rate_three_param,
-                                                       intercept_three_param - asymptote_three_param),
+        mutate(y_hat_three_param = list(fit_learning(c(p1,p2,p3),
                                                      seq(1:8),
                                                      seq(1:8),
                                                      ret = 'fit',
@@ -63,11 +57,12 @@ y_hat_three_param <-
 
 y_hat_two_param <-
         ml_learning_rate %>%
+        mutate(p1 = intercept_two_param,
+               p2 = learning_rate_two_param) %>%
         group_by(ptp,
                  condition,
                  hidden_pa_img_type) %>% 
-        mutate(y_hat_two_param = list(fit_learning(c(intercept_two_param,
-                                                     learning_rate_two_param),
+        mutate(y_hat_two_param = list(fit_learning(c(p1,p2),
                                                    seq(1:8),
                                                    seq(1:8),
                                                    ret = 'fit',

@@ -1,5 +1,5 @@
 ---
-title: "Schema boards: Analyzing everything"
+title: "Schema boards: Learning Rate"
 output:
   html_document:
     number_sections: false
@@ -20,7 +20,6 @@ source('./scripts/utils/load_all_libraries.R')
 qc_filter <- T
 
 plot_normality <- T
-plot_mouse_clicks <- F
 plot_fits_near_far <- F
 
 source('./scripts/utils/load_transform_data.R')
@@ -52,25 +51,26 @@ reportBF = function(x, digits = 4){
 
 # Normality checks
 
-## Block 2
+## Learning rate 2-parameters
 
-```{r block-2-normality-checks}
+```{r 2-param-learning-rates-normality-checks}
+
 if (plot_normality){
        # Density plot
 data_summary %>%
-        ggplot(aes(x=block_2_mouse_error_mean,
+        ggplot(aes(x=learning_rate_two_param,
                    y = ..density..)) +
         geom_histogram() +
         geom_density(lwd = 1,
                      color = 'red') +
         facet_wrap(~hidden_pa_img_type) +
-        ggtitle('Block 2, RAW: Histogram and Density')
+        ggtitle('Learning rate 2 param, RAW: Histogram and Density')
 
 # QQ Plot
 
 data_summary %>%
-        ggqqplot(x = 'block_2_mouse_error_mean') +
-        ggtitle('Block 2, RAW: QQ Plots') +
+        ggqqplot(x = 'learning_rate_two_param') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
         facet_wrap(~hidden_pa_img_type) 
 }
 

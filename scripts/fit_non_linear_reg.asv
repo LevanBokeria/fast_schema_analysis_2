@@ -105,7 +105,13 @@ for iPtp = 1:n_ptp
             [warnMsg, warnId] = lastwarn;
             
             if ~isempty(warnMsg)
-                                
+
+                % Try fminsearch!
+                [out_three_params,fval_three_param] = est_learning_rate(y',params_three,plotFMSEstimation,'three_parameters');
+                
+                % Record fminsearch 
+                
+                
                 % Plot
 %                 figure
 %                 plot(mdl_three_par.Variables.y)
@@ -117,16 +123,6 @@ for iPtp = 1:n_ptp
                 
                 tbl.warnMsg{ctr} = warnMsg;
                 tbl.warnId{ctr}  = warnId;
-                
-                warning('');
-                % Try fminsearch!
-                [out_three_params,fval_three_param] = est_learning_rate(y',params_three,plotFMSEstimation,'three_parameters');
-                
-                % Record fminsearch output
-                w = warning('query','last');
-                
-                tbl.fminsearch_three_param{ctr} = out_three_params;
-                tbl.fminsearch_message{ctr} = w.identifier;
 
             end
 

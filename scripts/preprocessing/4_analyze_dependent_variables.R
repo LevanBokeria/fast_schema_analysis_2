@@ -75,44 +75,52 @@ mean_by_rep_long_all_types <- bind_rows(mean_by_rep_long_all_pa,
                                         mean_by_rep_long_border_dist)
 
 
-## Block 2 average -----------------------------------------
+## Rough measures -------------------
 
-### All PAs ========================================
-
+### All PAs ===============================
 data_summary_all_pas <- long_data %>%
-        filter(block == 2) %>%
         group_by(ptp,
                  counterbalancing,
                  condition) %>%
-        summarise(n_trials = n(),
-                  block_2_mouse_error_mean = mean(mouse_error, na.rm = T),
-                  block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
-                  block_2_rt_mean = mean(rt, na.rm = T),
-                  block_2_rt_sd   = sd(rt, na.rm = T),                  
-                  hidden_pa_img_type = 'all_pa') %>% 
-        ungroup()
+        summarise(block_2_mouse_error_mean   = mean(mouse_error[cur_data()$block==2],na.rm=T),
+                  block_2_mouse_error_sd     = sd(mouse_error[cur_data()$block==2],na.rm=T),
+                  block_2_rt_mean            = mean(rt[cur_data()$block==2],na.rm=T),
+                  block_2_rt_sd              = sd(rt[cur_data()$block==2],na.rm=T),
+                  rep_2_3_4_mouse_error_mean = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_error_sd   = sd(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_rt_mean    = mean(rt[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_rt_sd      = sd(rt[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_1_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 1],na.rm=T),
+                  rep_2_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 2],na.rm=T)) %>%
+        ungroup() %>%
+        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean)
 
-### Near and Far separately ========================================
-
+### Combine ===============================
 data_summary_near_far_pas <- long_data %>%
-        filter(block == 2,
-               hidden_pa_img_type %in% c('near','far')) %>% 
+        filter(hidden_pa_img_type %in% c('near','far')) %>%
+        droplevels() %>%
         group_by(ptp,
                  counterbalancing,
                  condition,
                  hidden_pa_img_type) %>%
-        summarise(n_trials = n(),
-                  block_2_mouse_error_mean = mean(mouse_error, na.rm = T),
-                  block_2_mouse_error_sd   = sd(mouse_error, na.rm = T),
-                  block_2_rt_mean = mean(rt, na.rm = T),
-                  block_2_rt_sd   = sd(rt, na.rm = T)) %>% 
-        ungroup()
+        summarise(block_2_mouse_error_mean   = mean(mouse_error[cur_data()$block==2],na.rm=T),
+                  block_2_mouse_error_sd     = sd(mouse_error[cur_data()$block==2],na.rm=T),
+                  block_2_rt_mean            = mean(rt[cur_data()$block==2],na.rm=T),
+                  block_2_rt_sd              = sd(rt[cur_data()$block==2],na.rm=T),
+                  rep_2_3_4_mouse_error_mean = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_error_sd   = sd(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_rt_mean    = mean(rt[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_2_3_4_mouse_rt_sd      = sd(rt[cur_data()$hidden_pa_img_row_number_across_blocks %in% c(2,3,4)],na.rm=T),
+                  rep_1_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 1],na.rm=T),
+                  rep_2_mouse_error_mean     = mean(mouse_error[cur_data()$hidden_pa_img_row_number_across_blocks == 2],na.rm=T)) %>%
+        ungroup() %>%
+        mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean,
+               hidden_pa_img_type = 'all_pa')
 
 ### Combine =============================
 data_summary <- NULL
 data_summary <- bind_rows(data_summary_all_pas,
                           data_summary_near_far_pas)
-
 
 ### Log transforms ==========================
 data_summary <- data_summary %>%

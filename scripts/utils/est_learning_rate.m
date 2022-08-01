@@ -5,7 +5,7 @@ function [out_params,fval] = est_learning_rate(ptp_data,params,plotEstimation,wh
         options = optimset('PlotFcns',@optimplotfval);    
         [out_params,fval] = fminsearch(@fit_learning,params,options);
     else
-        options = optimset('MaxFunEvals',2e10);
+        options = optimset('MaxFunEvals',2000000);
         [out_params,fval] = fminsearch(@fit_learning,params,options);
     end
     % A nested function, so that the @mink_distance could also take in

@@ -127,7 +127,7 @@ if (plot_mouse_clicks){
 
 ## All data, each condition
 
-```{r raw-learning-curves-and-fits, fig.width=13, fig.height=60}
+```{r raw-learning-curves-and-fits, fig.width=13, fig.height=100}
 
 
 # Plot the fits
@@ -143,46 +143,46 @@ fig_each_ptp <- mean_by_rep_long_all_types %>%
         geom_line(alpha=0.5) +
 
 
-        # # Add the y_hat two parameters
-        # geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
-        #               y=y_hat_two_param),
-        #           size=1,
-        #           color='red',
-        #           linetype = 'twodash') +
-        # 
-        # # Add the y_hat three parameters
-        # geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
-        #               y=y_hat_three_param),
-        #           size=1,
-        #           color='blue',
-        #           linetype = 'longdash') +
-        # 
-        # geom_text(data=filter(
-        #         data_summary,
-        #         hidden_pa_img_type == 'all_pa',
-        #         ),
-        #         aes(x=4.5,
-        #             y=250,
-        #             label = paste('int=',
-        #                           as.character(round(intercept_two_param,2)),
-        #                           ' ',
-        #                           'rate=',
-        #                           as.character(round(learning_rate_two_param,2)),
-        #                           seq='')),
-        #         color = 'red') +
-        # geom_text(data=filter(
-        #         data_summary,
-        #         hidden_pa_img_type == 'all_pa',
-        #         ),
-        #         aes(x=4.5,
-        #             y=200,
-        #             label = paste('int=',
-        #                           as.character(round(intercept_three_param,2)),
-        #                           ' ',
-        #                           'rate=',
-        #                           as.character(round(learning_rate_three_param,2)),
-        #                           seq='')),
-        #         color = 'blue') +
+        # Add the y_hat two parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_two_param),
+                  size=1,
+                  color='red',
+                  linetype = 'twodash') +
+
+        # Add the y_hat three parameters
+        geom_line(aes(x=hidden_pa_img_row_number_across_blocks,
+                      y=y_hat_three_param),
+                  size=1,
+                  color='blue',
+                  linetype = 'longdash') +
+
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'all_pa',
+                ),
+                aes(x=4.5,
+                    y=250,
+                    label = paste('int=',
+                                  as.character(round(intercept_two_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_two_param,2)),
+                                  seq='')),
+                color = 'red') +
+        geom_text(data=filter(
+                data_summary,
+                hidden_pa_img_type == 'all_pa',
+                ),
+                aes(x=4.5,
+                    y=200,
+                    label = paste('int=',
+                                  as.character(round(intercept_three_param,2)),
+                                  ' ',
+                                  'rate=',
+                                  as.character(round(learning_rate_three_param,2)),
+                                  seq='')),
+                color = 'blue') +
 
 
         facet_grid(ptp~condition) +
@@ -247,7 +247,7 @@ print(fig_each_ptp)
 
 ## Near vs far
 
-```{r landmark-raw-learning-curves-and-fits, fig.width=18, fig.height=60}
+```{r landmark-raw-learning-curves-and-fits, fig.width=18, fig.height=100}
 if (plot_fits_near_far){
         # For mouse euclidean distance
         
@@ -345,7 +345,7 @@ print(fig_each_ptp_lm)
 
 ## Near vs far difference across trials:
 
-```{r near-far-diff-across-reps, fig.width=10, fig.height=7}
+```{r near-far-diff-across-reps, fig.width=20, fig.height=20}
 
 fig <- mean_by_rep_long_all_types %>%
         filter(hidden_pa_img_type %in% c('near','far'),
@@ -596,6 +596,91 @@ print(fig)
 ```
 
 
+# Comparing all dependent variables
+
+```{r compare-all-depvar, fig.width=15, fig.height=10}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'all_pa') %>%
+        droplevels() %>%
+        pivot_longer(cols = c(rep_1_to_2_diff,
+                              rep_2_3_4_mouse_error_mean,
+                              block_2_mouse_error_mean),
+                     names_to = 'performance_type',
+                     values_to = 'mean_error') %>% 
+        mutate(performance_type = as.factor(performance_type)) %>%
+        reorder_levels(performance_type, order = c('rep_1_to_2_diff',
+                              'rep_2_3_4_mouse_error_mean',
+                              'block_2_mouse_error_mean')) %>%
+        
+        ggplot(aes(x=condition,
+                   y=mean_error,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        ggtitle('Block 2, comparing conditions') +
+        ylab('Value') + 
+        xlab('') +
+        theme(legend.position = '') +
+        facet_wrap(~performance_type)
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>%
+        droplevels() %>%
+        pivot_longer(cols = c(rep_1_to_2_diff,
+                              rep_2_3_4_mouse_error_mean,
+                              block_2_mouse_error_mean),
+                     names_to = 'performance_type',
+                     values_to = 'mean_error') %>% 
+                
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition,
+                                performance_type),
+                    names_from = hidden_pa_img_type,
+                    values_from = mean_error) %>% 
+        mutate(far_minus_near = far - near) %>% 
+        
+        mutate(performance_type = as.factor(performance_type)) %>%
+        reorder_levels(performance_type, order = c('rep_1_to_2_diff',
+                              'rep_2_3_4_mouse_error_mean',
+                              'block_2_mouse_error_mean')) %>%        
+        
+        ggplot(aes(x=condition,
+                   y=far_minus_near,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2) +
+        geom_boxplot(width=0.1,
+                     fatten=4,
+                     outlier.shape = '') +
+
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        geom_point(alpha = 0.2) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=1) +
+        stat_summary(fun.data = mean_cl_normal,
+                     geom = "errorbar",
+                     size=1,
+                     width=0.5,
+                     color='red') +
+        geom_hline(yintercept = 0, linetype = 'dashed') +
+        theme(legend.position = '') +
+        ylab('Far minus Near') +
+        xlab('') +
+        facet_wrap(~performance_type)
+         
+
+```
 
 
 # Block 2 mean performance:

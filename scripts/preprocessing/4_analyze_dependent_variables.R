@@ -96,7 +96,7 @@ data_summary_all_pas <- long_data %>%
         mutate(rep_1_to_2_diff = rep_1_mouse_error_mean - rep_2_mouse_error_mean,
                hidden_pa_img_type = 'all_pa')
 
-### Combine ===============================
+### Near and Far PAs ===============================
 data_summary_near_far_pas <- long_data %>%
         filter(hidden_pa_img_type %in% c('near','far')) %>%
         droplevels() %>%

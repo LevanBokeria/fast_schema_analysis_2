@@ -362,6 +362,7 @@ data_summary %>%
 
 data_for_bf_schema_c_far_vs_near <- data_summary %>%
         filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(condition == 'schema_c') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,
@@ -386,6 +387,7 @@ bf_schema_c_far_vs_near <- reportBF(ttestBF(
 
 data_for_bf_schema_c_far_vs_near_LOG <- data_summary %>%
         filter(hidden_pa_img_type != 'all_pa') %>%
+        filter(condition == 'schema_c') %>%
         droplevels() %>%
         
         pivot_wider(id_cols = c(ptp,

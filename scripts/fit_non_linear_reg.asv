@@ -118,21 +118,21 @@ for iPtp = 1:n_ptp
                 w = warning('query','last');
 
                 tbl.fminsearch_three_param{ctr} = out_three_params;
-                tbl.fminsearch_message    {ctr} = w.identifier;
+                tbl.fminsearch_message{ctr} = w.identifier;
 
             end
 
             % Save in a table
-            tbl.ptp                      {ctr} = curr_ptp;
-            tbl.condition                {ctr} = curr_cond;
-            tbl.hidden_pa_img_type       {ctr} = curr_type;
-            tbl.sse_two_param            (ctr) = mdl_two_par.SSE;
-            tbl.intercept_two_param      (ctr) = mdl_two_par.Coefficients.Estimate(1);
-            tbl.learning_rate_two_param  (ctr) = mdl_two_par.Coefficients.Estimate(2);
-            tbl.sse_three_param          (ctr) = mdl_three_par.SSE;
-            tbl.intercept_three_param    (ctr) = mdl_three_par.Coefficients.Estimate(3);
+            tbl.ptp{ctr} = curr_ptp;
+            tbl.condition{ctr} = curr_cond;
+            tbl.hidden_pa_img_type{ctr} = curr_type;
+            tbl.sse_two_param(ctr) = mdl_two_par.SSE;
+            tbl.intercept_two_param(ctr) = mdl_two_par.Coefficients.Estimate(1);
+            tbl.learning_rate_two_param(ctr) = mdl_two_par.Coefficients.Estimate(2);
+            tbl.sse_three_param(ctr) = mdl_three_par.SSE;
+            tbl.intercept_three_param(ctr) = mdl_three_par.Coefficients.Estimate(3);
             tbl.learning_rate_three_param(ctr) = mdl_three_par.Coefficients.Estimate(2);
-            tbl.asymptote_three_param    (ctr) = mdl_three_par.Coefficients.Estimate(3) - mdl_three_par.Coefficients.Estimate(1);
+            tbl.asymptote_three_param(ctr) = mdl_three_par.Coefficients.Estimate(3) - mdl_three_par.Coefficients.Estimate(1);
 
             ctr = ctr + 1;
         end %itype

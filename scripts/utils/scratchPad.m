@@ -1,19 +1,50 @@
-clear; clc;
+clear; clc; close all;
 
 dbstop if error;
 
-load carbig
-tbl = table(Horsepower,Weight,MPG);
+params_two   = [500,0.1];
 
-modelfun = @(b,x)b(1) + b(2)*x(:,1).^b(3) + b(4)*x(:,2).^b(5);
+assy = 30;
 
-beta0 = [-50 500 -1 500 -1];
-mdl = fitnlm(tbl,modelfun,beta0)
+y = [500,assy,assy,assy,assy,assy,assy,assy]';
 
-X = [Horsepower,Weight];
-y = MPG;
-modelfun = @(b,x)b(1) + b(2)*x(:,1).^b(3) + b(4)*x(:,2).^b(5);
+% Now fit the data
+X = (1:8)';
 
-beta0 = [-50 500 -1 500 -1];
+modelfun_two_par = @(b,x)b(1) * exp(-b(2) * (x(:,1)-1));
 
-mdl = fitnlm(X,y,modelfun,beta0)
+mdl_two_par = fitnlm(X,y,modelfun_two_par,params_two)
+
+plot(mdl_two_par.predict)
+hold on
+plot(mdl_two_par.Variables.y)
+
+%% Calculate sse for various params
+sse = [];
+
+for lr = 0.1:0.1:10
+    
+    lr
+
+    % Create the fake data
+    y_hat = 300 * exp(-lr*(X-1));
+
+    % mse
+    sse(length(sse)+1) = nansum(abs(y - y_hat).^2);
+
+end
+
+
+%% Three parameter
+
+params_three = [150,0.1,180];
+
+
+modelfun_three_par = @(b,x)b(1) * (exp(-b(2) * (x(:,1)-1)) - 1) + b(3);
+
+mdl_three_par = fitnlm(X,y,modelfun_three_par,params_three)
+
+close 
+plot(mdl_three_par.predict)
+hold on
+plot(mdl_three_par.Variables.y)

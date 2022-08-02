@@ -124,18 +124,18 @@
                                 TRUE ~ learning_rate_three_param
                         ))
                         
+                # Gaussianize the rates
+                learning_rate_check_iqr <- learning_rate_check_iqr %>%
+                        mutate(learning_rate_two_param_no_outlier_G = as.numeric(
+                                Gaussianize(
+                                learning_rate_two_param_no_outlier,
+                                type = 's')))
                 
                 # Merge with ml_learning_rate
                 data_summary <- merge(data_summary,
                                           learning_rate_check_iqr,
                                           all.x = T)
-        
-                # Log transforms
-                data_summary <- data_summary %>%
-                        mutate(learning_rate_two_param_LOG              = log(learning_rate_two_param),
-                               learning_rate_three_param_LOG            = log(learning_rate_three_param),
-                               learning_rate_two_param_no_outlier_LOG   = log(learning_rate_two_param_no_outlier),
-                               learning_rate_three_param_no_outlier_LOG = log(learning_rate_three_param_no_outlier))
+
                 
                 if (saveDataSummary){
                         

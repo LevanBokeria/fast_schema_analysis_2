@@ -56,8 +56,15 @@ reportBF = function(x, digits = 4){
 ```{r 2-param-learning-rates-normality-checks}
 
 if (plot_normality){
-       # Density plot
-data_summary %>%
+
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
+        
+# Density plot
+f2 <- data_summary %>%
         ggplot(aes(x=learning_rate_two_param,
                    y = ..density..)) +
         geom_histogram() +
@@ -66,62 +73,70 @@ data_summary %>%
         facet_wrap(~hidden_pa_img_type) +
         ggtitle('Learning rate 2 param, RAW: Histogram and Density')
 
-# QQ Plot
+print(f1)
+print(f2)
 
-data_summary %>%
-        ggqqplot(x = 'learning_rate_two_param') +
-        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
-        facet_wrap(~hidden_pa_img_type) 
 }
 
 
 ```
 
-```{r log-transformations}
+```{r 2-param-learning-rates-no-outlier-normality-checks}
+
 if (plot_normality){
+
+# QQ Plot
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param_no_outlier') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
         
-    # Density plot
-data_summary %>%
-        ggplot(aes(x=block_2_mouse_error_mean_LOG,
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param_no_outlier,
                    y = ..density..)) +
         geom_histogram() +
         geom_density(lwd = 1,
                      color = 'red') +
         facet_wrap(~hidden_pa_img_type) +
-        ggtitle('Block 2, LOG: Histogram and Density')
+        ggtitle('Learning rate 2 param, RAW: Histogram and Density')
+
+print(f1)
+print(f2)
+
+}
+
+
+```
+
+```{r 2-param-learning-rates-no-outlier-gaussianized-normality-checks}
+
+if (plot_normality){
 
 # QQ Plot
-
-data_summary %>%
-        ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
-        ggtitle('Block 2, LOG: QQ Plots') +
-        facet_wrap(~hidden_pa_img_type)
-
-}
-
-```
-
-# Plot mouse clicks
-
-```{r mouse-heat-plots, fig.width=15, fig.height=20}
-if (plot_mouse_clicks){
-      long_data %>%
-        filter(block == 2) %>%
-        droplevels() %>%
-        ggplot(aes(mouse_clientX - left_offset,mouse_clientY - top_offset)) +
-        geom_point(alpha=0.3) +
-        geom_point(aes(pa_center_x - left_offset,pa_center_y - top_offset),
-                   color='red',
-                   size=2) +
-        # geom_density_2d_filled(alpha = 0.3) +
-        facet_grid(ptp~condition) +
-        ggtitle('block 2: Mouse click locations relative to PA')  
+f1 <- data_summary %>%
+        ggqqplot(x = 'learning_rate_two_param_no_outlier_G') +
+        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        facet_wrap(~hidden_pa_img_type) 
         
-        
+# Density plot
+f2 <- data_summary %>%
+        ggplot(aes(x=learning_rate_two_param_no_outlier_G,
+                   y = ..density..)) +
+        geom_histogram() +
+        geom_density(lwd = 1,
+                     color = 'red') +
+        facet_wrap(~hidden_pa_img_type) +
+        ggtitle('Learning rate 2 param, RAW: Histogram and Density')
+
+print(f1)
+print(f2)
+
 }
 
 
 ```
+
 
 # Learning curve plots
 

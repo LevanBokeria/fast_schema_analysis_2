@@ -14,7 +14,7 @@ dbstop if error;
 
 warning('off','MATLAB:table:RowsAddedExistingVars')
 
-saveData = 1;
+saveData = 0;
 
 %% Load and prepare the dataset
 opts = detectImportOptions('./results/mean_by_rep_long_all_types.csv');
@@ -35,20 +35,20 @@ all_border_dist_types = unique(df.border_dist_closest);
 
 %% Start the for loop
 params_two   = [250,0.1];
-params_three = [250,0.1,200];
+params_three = [180,0.1,150];
 plotFMSEstimation = 0;
 
 tbl = table;
 
 ctr = 1;
 for iPtp = 1:n_ptp
-    iPtp
+%     iPtp
     
     for iCond = 1:length(all_conditions)
-        all_conditions{iCond}
+%         all_conditions{iCond}
         
         for iType = 1:length(all_hidden_pa_types)
-            iType
+%             iType
             
 %             if strcmp(all_conditions{iCond},'no_schema') | strcmp(all_conditions{iCond},'random_loc')
 %                 

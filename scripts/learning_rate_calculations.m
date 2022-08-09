@@ -9,7 +9,7 @@
 % 3 parameter model:
 
 %% Estimate learning rates
-clear; clc;
+clear; clc; close all;
 dbstop if error;
 
 warning('off','MATLAB:table:RowsAddedExistingVars')
@@ -35,7 +35,7 @@ all_border_dist_types = unique(df.border_dist_closest);
 
 %% Start the for loop
 params_two   = [250,0.1];
-params_three = [180,0.1,150];
+params_three = [250,0.1,230];
 plotFMSEstimation = 0;
 
 tbl = table;
@@ -72,8 +72,19 @@ for iPtp = 1:n_ptp
             % Now fit the data
             
             % 1. The 2 parameter model
-            [out_two_params,  fval_two_param] = est_learning_rate(y',params_two,plotFMSEstimation,'two_parameters');
-            [out_three_params,fval_three_param] = est_learning_rate(y',params_three,plotFMSEstimation,'three_parameters');
+            [out_two_params,  fval_two_param,exitFlag_two_param] = ...
+                est_learning_rate(y',params_two,plotFMSEstimation,'two_parameters');
+            [out_three_params,fval_three_param,exitFlag_three_param] = ...
+                est_learning_rate(y',params_three,plotFMSEstimation,'three_parameters');
+
+            if ~exitFlag_three_param
+
+                figure
+                plot(y)
+                title([curr_ptp ' ' curr_cond ' ' curr_type],'interpreter','none')
+
+
+            end
             
             % Save in a table
             tbl.ptp{ctr} = curr_ptp;
@@ -82,10 +93,12 @@ for iPtp = 1:n_ptp
             tbl.sse_two_param(ctr) = fval_two_param;
             tbl.intercept_two_param(ctr) = out_two_params(1);
             tbl.learning_rate_two_param(ctr) = out_two_params(2);
+            tbl.exitFlag_two_param(ctr) = exitFlag_two_param;
             tbl.sse_three_param(ctr) = fval_three_param;
             tbl.intercept_three_param(ctr) = out_three_params(1);
             tbl.learning_rate_three_param(ctr) = out_three_params(2);
             tbl.asymptote_three_param(ctr) = out_three_params(1) - out_three_params(3);
+            tbl.exitFlag_three_param(ctr) = exitFlag_three_param;
             
             ctr = ctr + 1;
         end %itype

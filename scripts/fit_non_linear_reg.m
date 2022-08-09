@@ -54,7 +54,7 @@ tbl = table;
 ctr = 1;
 
 % Some options for fitting nlm 3 parameter
-opt_three_param = statset('MaxFunEvals', 2e10, 'MaxIter', 2e10);
+opt_three_param = statset('MaxIter', 0);
 
 for iPtp = 1:n_ptp
     iPtp
@@ -92,6 +92,7 @@ for iPtp = 1:n_ptp
             end
 
             tbl.fminsearch_two_param         {ctr} = out_two_params;
+            tbl.fminsearch_two_param_fval    (ctr) = fval_two_param;
             tbl.fminsearch_two_param_exitflag(ctr) = exitFlag;
             tbl.fminsearch_two_param_message {ctr} = warnId;  
 
@@ -108,6 +109,7 @@ for iPtp = 1:n_ptp
 
             % Record fminsearch output
             tbl.fminsearch_three_param         {ctr} = out_three_params;
+            tbl.fminsearch_three_param_fval    (ctr) = fval_three_param;
             tbl.fminsearch_three_param_exitflag(ctr) = exitFlag;
             tbl.fminsearch_three_param_message {ctr} = warnId;            
 
@@ -116,14 +118,14 @@ for iPtp = 1:n_ptp
 
             % Two parameters
             modelfun_two_par = @(b,x)b(1) * exp(-b(2) * (x(:,1)-1));
-            mdl_two_par = fitnlm(X,y,modelfun_two_par,params_two);
+            mdl_two_par = fitnlm(X,y,modelfun_two_par,tbl.fminsearch_two_param{ctr});
 
             % Three parameter
             modelfun_three_par = @(b,x)b(3) * (exp(-b(2) * (x(:,1)-1)) - 1) + b(1);
 
             try
                 lastwarn('');
-                mdl_three_par = fitnlm(X,y,modelfun_three_par,params_three,'options', opt_three_param);           
+                mdl_three_par = fitnlm(X,y,modelfun_three_par,tbl.fminsearch_three_param{ctr},'options', opt_three_param);           
 
             catch e
 

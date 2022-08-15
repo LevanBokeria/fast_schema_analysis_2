@@ -27,13 +27,21 @@ for lr = 0.1:0.1:10
     lr
 
     % Create the fake data
-    y_hat = 300 * exp(-lr*(X-1));
+    y_hat = 500 * exp(-lr*(X-1));
 
     % mse
     sse(length(sse)+1) = nansum(abs(y - y_hat).^2);
 
 end
 
+lr = 0.1:0.1:40
+
+[M,I] = min(sse)
+
+lr_good = lr(I)
+
+plot(sse)
+ylim([0,3])
 
 %% Three parameter
 

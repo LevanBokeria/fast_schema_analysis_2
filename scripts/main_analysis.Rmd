@@ -713,7 +713,7 @@ bf_near_c_vs_ic <- reportBF(ttestBF(
 
 ```
 
-```{r bf-analysis-near-schema-l-vs-schema-c-LOG}
+```{r bf-analysis-near-schema-c-vs-schema-ic-LOG}
 
 data_for_bf_near_c_vs_ic_LOG <- data_summary %>%
         filter(hidden_pa_img_type == 'near') %>%

@@ -134,8 +134,19 @@
                                        Gaussianize(
                                                learning_rate_two_param,
                                                type = 's'
+                                               )
+                                       ),
+                               learning_rate_three_param_no_outlier_G = as.numeric(
+                                       Gaussianize(
+                                               learning_rate_three_param_no_outlier,
+                                               type = 's')),
+                               learning_rate_three_param_G = as.numeric(
+                                       Gaussianize(
+                                               learning_rate_three_param,
+                                               type = 's'
+                                               )
                                        )
-                               ))
+                               )
                 
                 # Merge with ml_learning_rate
                 data_summary <- merge(data_summary,

@@ -2,11 +2,13 @@ clear; clc; close all;
 
 dbstop if error;
 
-params_two   = [500,0.1];
 
-assy = 30;
+intercept = 620;
+assy = 10;
 
-y = [500,assy,assy,assy,assy,assy,assy,assy]';
+params_two   = [intercept,0.1];
+
+y = [intercept,assy,assy,assy,assy,assy,assy,assy]';
 
 % Now fit the data
 X = (1:8)';
@@ -19,22 +21,24 @@ plot(mdl_two_par.predict)
 hold on
 plot(mdl_two_par.Variables.y)
 
+[out_two_params,fval_two_param,exitFlag] = est_learning_rate(y',params_two,0,'two_parameters')
+
 %% Calculate sse for various params
 sse = [];
 
-for lr = 0.1:0.1:10
+for lr = 0.1:0.1:80
     
     lr
 
     % Create the fake data
-    y_hat = 500 * exp(-lr*(X-1));
+    y_hat = intercept * exp(-lr*(X-1));
 
     % mse
     sse(length(sse)+1) = nansum(abs(y - y_hat).^2);
 
 end
 
-lr = 0.1:0.1:40
+lr = 0.1:0.1:80
 
 [M,I] = min(sse)
 

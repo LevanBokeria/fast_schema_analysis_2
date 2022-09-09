@@ -84,7 +84,7 @@ print(f2)
 ```{r 2-param-learning-rates-gauss-normality-checks}
 
 if (plot_normality){
-git 
+
         
 # QQ Plot
 f1 <- data_summary %>%
@@ -285,7 +285,7 @@ print(f2)
 
 # Which model wins?
 
-```{r model-comparison, fig.width=18, fig.height=6}
+```{r model-comparison, fig.width=10, fig.height=5}
 
 # Just do the count of winning model across all participants:
 data_summary <- data_summary %>%

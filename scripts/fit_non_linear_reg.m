@@ -9,7 +9,7 @@ warning('off','MATLAB:table:RowsAddedExistingVars')
 % warning('off','stats:nlinfit:IllConditionedJacobian')
 % warning('off','stats:nlinfit:IllConditionedJacobian')
 
-saveData = 1;
+saveData = 0;
 qc_filter = 0;
 
 %% Load and prepare the dataset
@@ -96,6 +96,24 @@ for iPtp = 1:n_ptp
             tbl.fminsearch_two_param_exitflag(ctr) = exitFlag;
             tbl.fminsearch_two_param_message {ctr} = warnId;  
 
+            %% Fminsearch two param on reps 2-8
+
+            % Delete the first variable
+            y_2_8 = y(2:end);
+
+            lastwarn('');
+            [out_two_params_2_8,fval_two_param_2_8,exitFlag_2_8] = est_learning_rate(y_2_8',params_two,plotFMSEstimation,'two_parameters');
+            [warnMsg, warnId] = lastwarn;
+            
+            if ~isempty(warnMsg)
+                warning('off',warnId);
+            end
+
+            tbl.fminsearch_two_param_2_8         {ctr} = out_two_params_2_8;
+            tbl.fminsearch_two_param_fval_2_8    (ctr) = fval_two_param_2_8;
+            tbl.fminsearch_two_param_exitflag_2_8(ctr) = exitFlag_2_8;
+            tbl.fminsearch_two_param_message_2_8 {ctr} = warnId;              
+
             %% Try fminsearch 3 param
             lastwarn('');
             [out_three_params,fval_three_param,exitFlag] = ...
@@ -112,6 +130,24 @@ for iPtp = 1:n_ptp
             tbl.fminsearch_three_param_fval    (ctr) = fval_three_param;
             tbl.fminsearch_three_param_exitflag(ctr) = exitFlag;
             tbl.fminsearch_three_param_message {ctr} = warnId;            
+
+            %% Try fminsearch 3 param on 2-8
+            
+            lastwarn('');
+            [out_three_params_2_8,fval_three_param_2_8,exitFlag_2_8] = ...
+                est_learning_rate(y_2_8',params_three,plotFMSEstimation,'three_parameters');
+
+            [warnMsg, warnId] = lastwarn;
+
+            if ~isempty(warnMsg)
+                warning('off',warnId);
+            end
+
+            % Record fminsearch output
+            tbl.fminsearch_three_param_2_8         {ctr} = out_three_params_2_8;
+            tbl.fminsearch_three_param_fval_2_8    (ctr) = fval_three_param_2_8;
+            tbl.fminsearch_three_param_exitflag_2_8(ctr) = exitFlag;
+            tbl.fminsearch_three_param_message_2_8 {ctr} = warnId; 
 
             %% Now non linear fitting algorithm
             X = (1:8)';

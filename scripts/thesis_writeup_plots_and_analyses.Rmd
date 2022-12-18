@@ -202,7 +202,7 @@ i_bf_all_pa_ic_vs_no_schema <- reportBF(ttestBF(
 
 # Near vs Far for all conditions
 
-```{r near-far-block-2-all-conditions, fig.width=15, fig.height=4}
+```{r near-far-block-2-all-conditions, fig.width=10, fig.height=4}
 
 data_summary %>%
         filter(hidden_pa_img_type != 'all_pa',
@@ -213,7 +213,7 @@ data_summary %>%
                    y=block_2_mouse_error_mean,
                    fill=condition)) +
         geom_violin(alpha = 0.2,
-                    width = 0.5) +
+                    width = 0.7) +
         geom_boxplot(width=0.2,
                      fatten=4,
                      outlier.shape = '') +
@@ -235,6 +235,32 @@ data_summary %>%
 
 ```
 
+## BF near-far
+
+```{r bf-near-far-all-conditions}
+
+null_interval <- c(-Inf,0)
+
+
+data_summary_wide_near_far <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>% 
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                condition),
+                    names_from = hidden_pa_img_type,
+                    values_from = block_2_mouse_error_mean_LOG) %>% 
+        mutate(near_minus_far = near-far)
+
+# For each condition do the BF test
+data_summary_wide_near_far %>%
+        group_by(condition) %>%
+        summarise(bf_10 = reportBF(ttestBF(cur_data()$near_minus_far,
+                                        nullInterval = null_interval)[1],4),
+                  bf_01 = 1/bf_10)
+
+```
 
 
 # Near PA schema-C vs schema-L
@@ -273,6 +299,31 @@ data_summary %>%
 ```
 
 
+```{r bf-near-c-vs-l}
+
+null_interval <- c(-Inf,Inf)
+
+
+data_summary_near_wide_condition <- data_summary %>%
+        filter(hidden_pa_img_type == 'near') %>%
+        droplevels() %>%
+        
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG)
+
+
+# schema C vs IC
+i_data <- data_summary_near_wide_condition$schema_c - data_summary_wide_condition$schema_l
+
+i_bf_near_pa_c_vs_l <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+```
 
 
 

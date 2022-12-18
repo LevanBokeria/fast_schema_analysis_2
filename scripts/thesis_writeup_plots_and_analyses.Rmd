@@ -1,5 +1,5 @@
 ---
-title: "Schema boards: Analyzing everything"
+title: "Schema boards: thesis writeup"
 output:
   html_document:
     number_sections: false
@@ -19,8 +19,6 @@ source('./scripts/utils/load_all_libraries.R')
 
 qc_filter <- T
 
-plot_normality <- T
-plot_mouse_clicks <- F
 plot_fits_near_far <- F
 
 source('./scripts/utils/load_transform_data.R')
@@ -50,65 +48,62 @@ reportBF = function(x, digits){
 
 ```
 
-# Normality checks
+# Compare all conditions
 
-## Block 2
+## Just learning across trials 
 
-```{r block-2-normality-checks}
-if (plot_normality){
-       # Density plot
-data_summary %>%
-        ggplot(aes(x=block_2_mouse_error_mean,
-                   y = ..density..)) +
-        geom_histogram() +
-        geom_density(lwd = 1,
-                     color = 'red') +
-        facet_wrap(~hidden_pa_img_type) +
-        ggtitle('Block 2, RAW: Histogram and Density')
+```{r learning-fits-across-participants-all-conditions, fig.height=4, fig.width=5}
 
-# QQ Plot
+# Plot the fits
+fig_each_ptp <- mean_by_rep_long_all_types %>%
+        filter(hidden_pa_img_type == 'all_pa',
+               border_dist_closest == 'all',
+               # condition %in% c('schema_c','schema_l')
+               ) %>%
+        droplevels() %>%                
+        group_by(condition,
+                 hidden_pa_img_row_number_across_blocks) %>%
+        summarise(n = n(),
+                  mouse_error_mean_across_ptp = mean(mouse_error_mean,na.rm = T),
+                  mouse_error_sd_across_ptp   = sd(mouse_error_mean, na.rm = T),
+                  sem                         = mouse_error_sd_across_ptp/sqrt(n),
+                  upper_95_ci = mouse_error_mean_across_ptp + qt(0.975,df = n-1)*sem,
+                  lower_95_ci = mouse_error_mean_across_ptp - qt(0.975,df = n-1)*sem) %>% 
+        ungroup() %>% 
+        ggplot(aes(x=hidden_pa_img_row_number_across_blocks,
+                   y=mouse_error_mean_across_ptp,
+                   color=condition)) +
+        geom_point(size=1.5) +
+        geom_line(size=0.5) +
+        # geom_ribbon(aes(ymin = lower_95_ci,
+        #                 ymax = upper_95_ci,
+        #                 group=condition,
+        #                 color=condition),
+        #             alpha = 0.1,
+        #             colour = NA) +
 
-data_summary %>%
-        ggqqplot(x = 'block_2_mouse_error_mean') +
-        ggtitle('Block 2, RAW: QQ Plots') +
-        facet_wrap(~hidden_pa_img_type) 
-}
+        # facet_grid(~condition) +
+        ggtitle(paste('Mouse euclidean distance; Across participants',sep='')) +
+        xlab('Image repetition') +
+        ylab('Error') +
+        scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8)) +
+        scale_y_continuous(breaks=seq(0,200,25)) +  
+        coord_cartesian(ylim = c(0,200)) +
+        # theme(legend.position = 'top') +
+        geom_vline(xintercept = 4.5, linetype = 'dashed') +
+        theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())        
 
+
+
+print(fig_each_ptp)
+
+# ggsave(filename = 'learning_rates_all_cond.png', plot = fig_each_ptp, path = './results/plots/', width = 5, height = 5, device='png', dpi=300)
 
 ```
 
-```{r log-transformations}
-if (plot_normality){
-        
-    # Density plot
-data_summary %>%
-        ggplot(aes(x=block_2_mouse_error_mean_LOG,
-                   y = ..density..)) +
-        geom_histogram() +
-        geom_density(lwd = 1,
-                     color = 'red') +
-        facet_wrap(~hidden_pa_img_type) +
-        ggtitle('Block 2, LOG: Histogram and Density')
-
-# QQ Plot
-
-data_summary %>%
-        ggqqplot(x = 'block_2_mouse_error_mean_LOG') +
-        ggtitle('Block 2, LOG: QQ Plots') +
-        facet_wrap(~hidden_pa_img_type)
-
-}
-
-```
-
-# Plot simple learning across conditions
 
 
-
-
-# Block 2 mean performance:
-
-## Compare conditions, across PAs:
+## Block 2 mean performance:
 
 ```{r block-2-conditions, fig.width=7}
 
@@ -119,15 +114,18 @@ data_summary %>%
                    y=block_2_mouse_error_mean,
                    fill=condition)) +
         geom_violin(alpha = 0.2) +
-        geom_boxplot(width=0.1,
-                     fatten=4,
+        geom_boxplot(width=0.2,
+                     fatten=5,
                      outlier.shape = '') +
-        geom_point(alpha = 0.2) +
+        # geom_point(alpha = 0.2) +
+        geom_jitter(width = 0.05,
+                    height = 0,
+                    alpha = 0.3) +
         # geom_jitter(height = 0,
         #             width = 0.06,
         #             alpha = 0.3) +
-        geom_line(aes(group=ptp),
-                  alpha = 0.1) +
+        # geom_line(aes(group=ptp),
+        #           alpha = 0.1) +
         stat_summary(fun=mean,
                      color='red',
                      size=1) +
@@ -138,17 +136,85 @@ data_summary %>%
 
 ```
 
-```{r block-2-LOG-conditions}
+## BF: Block 2 performance between pairs of conditions
 
-data_summary %>%
+```{r bf-analysis-pairs}
+
+null_interval <- c(-Inf,Inf)
+
+
+data_summary_wide_condition <- data_summary %>%
         filter(hidden_pa_img_type == 'all_pa') %>%
         droplevels() %>%
         
-        ggplot(aes(x=condition,
-                   y=block_2_mouse_error_mean_LOG,
+        pivot_wider(id_cols = c(ptp,
+                                counterbalancing,
+                                hidden_pa_img_type),
+                    names_from = condition,
+                    values_from = block_2_mouse_error_mean_LOG)
+
+
+# schema C vs IC
+i_data <- data_summary_wide_condition$schema_c - data_summary_wide_condition$schema_ic
+
+i_bf_all_pa_c_vs_ic <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+# schema C vs L
+i_data <- data_summary_wide_condition$schema_c - data_summary_wide_condition$schema_l
+
+i_bf_all_pa_c_vs_l <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+# schema C vs Rand
+i_data <- data_summary_wide_condition$schema_c - data_summary_wide_condition$random_loc
+
+i_bf_all_pa_c_vs_rand <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+# schema C vs No schema
+i_data <- data_summary_wide_condition$schema_c - data_summary_wide_condition$no_schema
+
+i_bf_all_pa_c_vs_no_schema <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+# schema IC vs No schema
+i_data <- data_summary_wide_condition$schema_ic - data_summary_wide_condition$no_schema
+
+i_bf_all_pa_ic_vs_no_schema <- reportBF(ttestBF(
+        i_data,
+        nullInterval = null_interval
+)[1],4)
+
+
+```
+
+
+
+
+# Near vs Far for all conditions
+
+```{r near-far-block-2-all-conditions, fig.width=15, fig.height=4}
+
+data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa',
+               # condition %in% c('schema_c','schema_l'),
+               ) %>%
+        droplevels() %>%
+        ggplot(aes(x=hidden_pa_img_type,
+                   y=block_2_mouse_error_mean,
                    fill=condition)) +
-        geom_violin(alpha = 0.2) +
-        geom_boxplot(width=0.1,
+        geom_violin(alpha = 0.2,
+                    width = 0.5) +
+        geom_boxplot(width=0.2,
                      fatten=4,
                      outlier.shape = '') +
         geom_point(alpha = 0.2) +
@@ -159,10 +225,57 @@ data_summary %>%
                   alpha = 0.1) +
         stat_summary(fun=mean,
                      color='red',
-                     size=1) +
-        ggtitle('Block 2 LOG, comparing conditions')
+                     size=0.5) +
+        # ggtitle('Block 2 error near and far, comparing conditions') +
+        ylab('Block 2 error') + 
+        xlab('') +
+        theme(legend.position = '') +
+        facet_wrap(~condition, nrow = 1)
+
 
 ```
+
+
+
+# Near PA schema-C vs schema-L
+
+
+```{r near-pa-block-2-c-vs-l, fig.width=3, fig.height=3}
+
+data_summary %>%
+        filter(hidden_pa_img_type == 'near',
+               condition %in% c('schema_c','schema_l'),
+               ) %>%
+        droplevels() %>%
+        ggplot(aes(x=condition,
+                   y=block_2_mouse_error_mean,
+                   fill=condition)) +
+        geom_violin(alpha = 0.2,
+                    width = 0.5) +
+        geom_boxplot(width=0.2,
+                     fatten=4,
+                     outlier.shape = '') +
+        geom_point(alpha = 0.2) +
+        # geom_jitter(height = 0,
+        #             width = 0.06,
+        #             alpha = 0.3) +
+        geom_line(aes(group=ptp),
+                  alpha = 0.1) +
+        stat_summary(fun=mean,
+                     color='red',
+                     size=0.5) +
+        # ggtitle('Block 2 error near and far, comparing conditions') +
+        ylab('Block 2 error') + 
+        xlab('') +
+        theme(legend.position = '')
+
+
+```
+
+
+
+
+
 
 ## Schema C vs Schema L
 

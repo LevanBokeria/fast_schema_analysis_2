@@ -27,8 +27,8 @@ long_data <- long_data %>%
         filter(!condition %in% c('practice','practice2')) %>%
         droplevels() %>%
         reorder_levels(condition, order = c('schema_c',
-                                            'schema_ic',
                                             'schema_l',
+                                            'schema_ic',
                                             'random_loc',
                                             'no_schema'))
 
@@ -43,8 +43,8 @@ if (file.exists('./results/data_summary.csv')){
                                  condition,
                                  hidden_pa_img_type),as.factor)) %>%
                 reorder_levels(condition, order = c('schema_c',
-                                                    'schema_ic',
                                                     'schema_l',
+                                                    'schema_ic',
                                                     'random_loc',
                                                     'no_schema'))
         
@@ -62,8 +62,8 @@ if (file.exists('./results/mean_by_rep_long_all_types.csv')){
                                 hidden_pa_img_type,
                                 border_dist_closest),as.factor)) %>%
                 reorder_levels(condition, order = c('schema_c',
-                                                    'schema_ic',
                                                     'schema_l',
+                                                    'schema_ic',
                                                     'random_loc',
                                                     'no_schema'))
         

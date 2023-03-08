@@ -118,7 +118,7 @@ if (plot_normality){
 # QQ Plot
 f1 <- data_summary %>%
         ggqqplot(x = 'learning_rate_two_param_no_outlier') +
-        ggtitle('Learning rate 2 param, RAW: QQ Plots') +
+        ggtitle('Learning rate 2 param, no outlier: QQ Plots') +
         facet_wrap(~hidden_pa_img_type) 
         
 # Density plot

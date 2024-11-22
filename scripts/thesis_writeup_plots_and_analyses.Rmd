@@ -104,7 +104,7 @@ fig_each_ptp <- mean_by_rep_long_all_types %>%
 
 print(fig_each_ptp)
 
-ggsave(filename = 'learning_rates_all_cond.png', plot = fig_each_ptp, path = './results/plots/', width = 5, height = 3, device='png', dpi=300)
+# ggsave(filename = 'learning_rates_all_cond.png', plot = fig_each_ptp, path = './results/plots/', width = 5, height = 3, device='png', dpi=300)
 
 ```
 
@@ -248,6 +248,23 @@ i_bf_all_pa_rand_vs_no_schema <- reportBF(ttestBF(
 
 ```
 
+## Effect size: Block 2 performance between pairs of conditions
+
+```{r effect-size-block-2-conditions}
+
+idf <- data_summary %>%
+        filter(hidden_pa_img_type == 'all_pa') %>%
+        droplevels() %>%
+        select(ptp,condition,block_2_mouse_error_mean_LOG)
+
+es_block_2_conditions <- idf %>%
+        cohens_d(block_2_mouse_error_mean_LOG ~ condition, 
+                 paired = TRUE, 
+                 var.equal = FALSE,
+                 # comparisons = list(c("schema_c","schema_ic"),),
+                 hedges.correction = FALSE)
+
+```
 
 
 
@@ -323,7 +340,7 @@ p <- data_summary %>%
         
 print(p) 
 
-ggsave(filename = 'near_far_barplot.png', plot = p, path = './results/plots/', width = 10, height = 3, device='png', dpi=300)
+# ggsave(filename = 'near_far_barplot.png', plot = p, path = './results/plots/', width = 10, height = 3, device='png', dpi=300)
 
 ```
 
@@ -351,6 +368,31 @@ data_summary_wide_near_far %>%
         summarise(bf_10 = reportBF(ttestBF(cur_data()$near_minus_far,
                                         nullInterval = null_interval)[1],4),
                   bf_01 = 1/bf_10)
+
+```
+
+## Effect size near-far
+
+```{r effect-size-near-far-all-conditions}
+
+
+idf <- data_summary %>%
+        filter(hidden_pa_img_type != 'all_pa') %>% 
+        droplevels() %>% 
+        select(ptp, condition, hidden_pa_img_type, block_2_mouse_error_mean_LOG)
+
+es_block_2_near_far <- idf %>%
+        group_by(condition) %>%
+        cohens_d(block_2_mouse_error_mean_LOG ~ hidden_pa_img_type, 
+        paired = TRUE, 
+        var.equal = FALSE,
+        # comparisons = list(c("schema_c","schema_ic"),),
+        hedges.correction = FALSE)
+        
+# Check that one sample test for differences is the same
+es_block_2_near_far_one_sample <- data_summary_wide_near_far %>%
+        group_by(condition) %>%
+        cohens_d(near_minus_far ~ 1, mu = 0) 
 
 ```
 
@@ -464,6 +506,22 @@ i_bf_far_pa_c_vs_no_schema <- reportBF(ttestBF(
 
 ```
 
+
+```{r effect-size-near-c-vs-l}
+
+idf <- data_summary %>%
+        filter(hidden_pa_img_type != "all_pa") %>% 
+        select(ptp,condition,hidden_pa_img_type,block_2_mouse_error_mean_LOG)
+
+es_block_2_near_and_far_conditions <- idf %>% 
+        group_by(hidden_pa_img_type) %>%
+        cohens_d(block_2_mouse_error_mean_LOG ~ condition, 
+        paired = TRUE, 
+        var.equal = FALSE,
+        # comparisons = list(c("schema_c","schema_ic"),),
+        hedges.correction = FALSE)
+
+```
 
 ## Schema C vs Schema L
 
